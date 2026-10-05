@@ -1,4 +1,5 @@
 export const SUMMON_COST = 5;
+export const SUMMON_COST_INCREMENT = 1;
 export const MAX_COMPANION_LEVEL = 3;
 
 export const COMPANIONS = [
@@ -23,6 +24,7 @@ export type CompanionId = (typeof COMPANIONS)[number]["id"];
 
 export interface ProgressionSnapshot {
   resources: number;
+  summonCost: number;
   companions: Readonly<Record<CompanionId, number>>;
 }
 
@@ -35,6 +37,7 @@ type ProgressionListener = (snapshot: ProgressionSnapshot) => void;
 
 export class GameProgression {
   private resources = 0;
+  private successfulSummons = 0;
   private readonly companionLevels: Record<CompanionId, number> = {
     mosquito: 0,
     rabbit: 0,
@@ -47,8 +50,13 @@ export class GameProgression {
   getSnapshot(): ProgressionSnapshot {
     return {
       resources: this.resources,
+      summonCost: this.getSummonCost(),
       companions: { ...this.companionLevels },
     };
+  }
+
+  getSummonCost(): number {
+    return SUMMON_COST + this.successfulSummons * SUMMON_COST_INCREMENT;
   }
 
   subscribe(listener: ProgressionListener): () => void {
@@ -69,11 +77,13 @@ export class GameProgression {
     if (availableCompanions.length === 0) {
       return { kind: "all-maxed" };
     }
-    if (this.resources < SUMMON_COST) {
+    const summonCost = this.getSummonCost();
+    if (this.resources < summonCost) {
       return { kind: "insufficient-resources" };
     }
 
-    this.resources -= SUMMON_COST;
+    this.resources -= summonCost;
+    this.successfulSummons += 1;
     const randomIndex = Math.min(
       Math.floor(this.random() * availableCompanions.length),
       availableCompanions.length - 1,

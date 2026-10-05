@@ -25,6 +25,7 @@ const RESOURCE_LOCATIONS = [
 
 export class StartupScene extends Phaser.Scene {
   private player!: Phaser.GameObjects.Arc;
+  private collectionZone!: Phaser.GameObjects.Arc;
   private destination: Phaser.Math.Vector2 | null = null;
   private destinationMarker!: Phaser.GameObjects.Arc;
   private resources: Phaser.GameObjects.Arc[] = [];
@@ -72,6 +73,16 @@ export class StartupScene extends Phaser.Scene {
       arena.lineBetween(ARENA.left + RENDER_SCALE, y, ARENA.right - RENDER_SCALE, y);
     }
 
+    this.collectionZone = this.add
+      .circle(
+        320 * RENDER_SCALE,
+        320 * RENDER_SCALE,
+        this.getCollectionDistance(),
+        0x38bdf8,
+        0.12,
+      )
+      .setStrokeStyle(2 * RENDER_SCALE, 0x7dd3fc, 0.8);
+
     this.resources = RESOURCE_LOCATIONS.map(({ x, y }) =>
       this.add
         .circle(x * RENDER_SCALE, y * RENDER_SCALE, RESOURCE_RADIUS, 0xfacc15)
@@ -107,6 +118,9 @@ export class StartupScene extends Phaser.Scene {
       }
     }
 
+    this.collectionZone
+      .setPosition(this.player.x, this.player.y)
+      .setRadius(this.getCollectionDistance());
     this.collectResources();
   }
 
@@ -136,9 +150,7 @@ export class StartupScene extends Phaser.Scene {
   }
 
   private collectResources(): void {
-    const collectionDistance = this.progression.getCollectionDistance(
-      PLAYER_RADIUS + RESOURCE_RADIUS,
-    );
+    const collectionDistance = this.getCollectionDistance();
 
     this.resources = this.resources.filter((resource) => {
       if (
@@ -162,6 +174,12 @@ export class StartupScene extends Phaser.Scene {
       );
       return false;
     });
+  }
+
+  private getCollectionDistance(): number {
+    return this.progression.getCollectionDistance(
+      PLAYER_RADIUS + RESOURCE_RADIUS,
+    );
   }
 
   private respawnResource(): void {

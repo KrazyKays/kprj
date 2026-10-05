@@ -3,6 +3,7 @@ import {
   GameProgression,
   MAX_COMPANION_LEVEL,
   SUMMON_COST,
+  SUMMON_COST_INCREMENT,
 } from "../src/game/progression";
 
 function collect(progression: GameProgression, amount: number): void {
@@ -12,30 +13,45 @@ function collect(progression: GameProgression, amount: number): void {
 }
 
 describe("GameProgression", () => {
-  it("requires and spends the fixed summon cost", () => {
+  it("increases the summon cost by one after each successful summon", () => {
     const progression = new GameProgression(() => 0);
 
     expect(progression.summon()).toEqual({ kind: "insufficient-resources" });
+    expect(progression.getSnapshot().summonCost).toBe(SUMMON_COST);
 
-    collect(progression, SUMMON_COST);
+    collect(progression, SUMMON_COST + SUMMON_COST_INCREMENT);
     expect(progression.summon()).toMatchObject({
       kind: "success",
       companion: { id: "mosquito" },
       level: 1,
     });
-    expect(progression.getSnapshot().resources).toBe(0);
+    expect(progression.getSnapshot()).toMatchObject({
+      resources: SUMMON_COST_INCREMENT,
+      summonCost: SUMMON_COST + SUMMON_COST_INCREMENT,
+    });
+
+    expect(progression.summon()).toEqual({ kind: "insufficient-resources" });
+    expect(progression.getSnapshot().summonCost).toBe(
+      SUMMON_COST + SUMMON_COST_INCREMENT,
+    );
   });
 
   it("upgrades duplicate companions and does not charge after they are all maxed", () => {
     const progression = new GameProgression(() => 0);
-    collect(progression, SUMMON_COST * (MAX_COMPANION_LEVEL * 3 + 1));
+    const summonCount = MAX_COMPANION_LEVEL * 3;
+    const totalCost =
+      (summonCount * (2 * SUMMON_COST + (summonCount - 1) * SUMMON_COST_INCREMENT)) /
+      2;
+    collect(progression, totalCost + SUMMON_COST + summonCount * SUMMON_COST_INCREMENT);
 
     for (let i = 0; i < MAX_COMPANION_LEVEL * 3; i += 1) {
       expect(progression.summon()).toMatchObject({ kind: "success" });
     }
 
     expect(progression.summon()).toEqual({ kind: "all-maxed" });
-    expect(progression.getSnapshot().resources).toBe(SUMMON_COST);
+    expect(progression.getSnapshot().resources).toBe(
+      SUMMON_COST + summonCount * SUMMON_COST_INCREMENT,
+    );
     expect(Object.values(progression.getSnapshot().companions)).toEqual([
       MAX_COMPANION_LEVEL,
       MAX_COMPANION_LEVEL,
@@ -49,7 +65,10 @@ describe("GameProgression", () => {
     const snail = new GameProgression(() => 0.9);
 
     for (const progression of [mosquito, rabbit, snail]) {
-      collect(progression, SUMMON_COST * 2);
+      collect(
+        progression,
+        SUMMON_COST + (SUMMON_COST + SUMMON_COST_INCREMENT),
+      );
       progression.summon();
       progression.summon();
     }

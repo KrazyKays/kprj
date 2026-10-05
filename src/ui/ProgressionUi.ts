@@ -2,7 +2,6 @@ import {
   COMPANIONS,
   GameProgression,
   MAX_COMPANION_LEVEL,
-  SUMMON_COST,
 } from "../game/progression";
 import type { CompanionId, ProgressionSnapshot } from "../game/progression";
 
@@ -63,10 +62,10 @@ export function bindProgressionUi(progression: GameProgression): () => void {
       }
     }
 
-    summonButton.disabled = snapshot.resources < SUMMON_COST || allMaxed;
+    summonButton.disabled = snapshot.resources < snapshot.summonCost || allMaxed;
     summonButton.textContent = allMaxed
       ? "Tous les compagnons sont au niveau max"
-      : `Invoquer · ${SUMMON_COST} ressources`;
+      : `Invoquer · ${snapshot.summonCost} ressources`;
   };
 
   const unsubscribe = progression.subscribe(render);
@@ -81,7 +80,7 @@ export function bindProgressionUi(progression: GameProgression): () => void {
             : `${result.companion.name} passe au niveau ${result.level}.`;
         break;
       case "insufficient-resources":
-        summonResult.textContent = `Il faut ${SUMMON_COST} ressources pour invoquer.`;
+        summonResult.textContent = `Il faut ${progression.getSummonCost()} ressources pour invoquer.`;
         break;
       case "all-maxed":
         summonResult.textContent = "Tous les compagnons ont atteint leur niveau maximal.";
