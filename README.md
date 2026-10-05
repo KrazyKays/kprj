@@ -1,4 +1,4 @@
-# Arena Survival
+# KattaK
 
 Petit jeu 2D navigateur construit avec TypeScript, Phaser 3 et Vite.
 
