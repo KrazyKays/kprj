@@ -2,6 +2,10 @@
 
 Petit jeu 2D navigateur construit avec TypeScript, Phaser 3 et Vite.
 
+## Commandes
+
+Déplacez le joueur avec les flèches, ZQSD ou WASD.
+
 ## Développement
 
 ```sh
