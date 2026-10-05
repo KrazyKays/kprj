@@ -19,7 +19,11 @@
       <aside class="game-panel" aria-label="Ressources et actions">
         <section class="panel-card" aria-labelledby="resources-title">
           <h2 id="resources-title">Ressources</h2>
-          <p class="panel-placeholder">Le compteur apparaîtra ici lorsque les collectibles seront ajoutés.</p>
+          <p class="resource-total">
+            <output id="resource-count" aria-label="Ressources collectées" aria-live="polite">0</output>
+            <span>collectées</span>
+          </p>
+          <p class="panel-placeholder">Déplacez le joueur jusqu’aux ressources dorées pour les ramasser.</p>
         </section>
         <section class="panel-card" aria-labelledby="actions-title">
           <h2 id="actions-title">Actions</h2>

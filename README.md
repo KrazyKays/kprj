@@ -8,10 +8,13 @@ Cliquez ou touchez un point de l’arène pour y déplacer le joueur. Cliquez ou
 touchez une autre position pendant son déplacement pour changer sa destination.
 Les clics et touchers en dehors de l’arène sont ignorés.
 
+Le joueur ramasse les ressources dorées en passant dessus. Le compteur dans le
+panneau augmente à chaque ressource collectée. Les emplacements sont fixes pour
+le moment ; ils ne réapparaissent pas.
+
 L’arène conserve un format carré : le panneau de ressources et d’actions est
 placé à côté sur grand écran et sous l’arène sur téléphone. Les emplacements du
-panneau sont préparés pour de futures fonctionnalités ; ils ne contiennent pas
-encore de compteurs ni d’actions jouables.
+panneau d’actions sont réservés aux futures fonctionnalités.
 
 ## Développement
 

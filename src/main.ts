@@ -1,5 +1,7 @@
 import Phaser from "phaser";
 import { createGameConfig } from "./game/config";
+import { bindResourceCounter } from "./ui/ResourceCounter";
 import "./style.css";
 
-new Phaser.Game(createGameConfig());
+const game = new Phaser.Game(createGameConfig());
+bindResourceCounter(game);

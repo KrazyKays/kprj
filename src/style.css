@@ -89,6 +89,21 @@ canvas {
   font-size: 1.125rem;
 }
 
+.resource-total {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0;
+  color: #fef3c7;
+}
+
+#resource-count {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
 .panel-placeholder {
   margin: 0.75rem 0 0;
   color: #aebbd0;
