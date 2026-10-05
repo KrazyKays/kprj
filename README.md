@@ -2,9 +2,11 @@
 
 Petit jeu 2D navigateur construit avec TypeScript, Phaser 3 et Vite.
 
-## Commandes
+## Déplacement
 
-Déplacez le joueur avec les flèches, ZQSD ou WASD.
+Cliquez ou touchez un point de l’arène pour y déplacer le joueur. Cliquez ou
+touchez une autre position pendant son déplacement pour changer sa destination.
+Les clics et touchers en dehors de l’arène sont ignorés.
 
 ## Développement
 
