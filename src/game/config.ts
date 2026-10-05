@@ -13,7 +13,7 @@ export function createGameConfig(
     parent: "game",
     width: GAME_SIZE * RENDER_SCALE,
     height: GAME_SIZE * RENDER_SCALE,
-    backgroundColor: "#111827",
+    backgroundColor: "#eee4ce",
     input: {
       keyboard: false,
       touch: true,

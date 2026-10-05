@@ -36,41 +36,27 @@ export class StartupScene extends Phaser.Scene {
 
   create(): void {
     const arena = this.add.graphics();
-    arena.fillStyle(0x172033);
-    arena.fillRoundedRect(
+    arena.fillStyle(0xeee4ce);
+    arena.fillRect(
       ARENA.left,
       ARENA.top,
       ARENA.right - ARENA.left,
       ARENA.bottom - ARENA.top,
-      12 * RENDER_SCALE,
     );
-    arena.lineStyle(2 * RENDER_SCALE, 0x3b4b67, 1);
-    arena.strokeRoundedRect(
+    arena.lineStyle(3 * RENDER_SCALE, 0x191815, 1);
+    arena.strokeRect(
       ARENA.left,
       ARENA.top,
       ARENA.right - ARENA.left,
       ARENA.bottom - ARENA.top,
-      12 * RENDER_SCALE,
     );
-    arena.lineStyle(RENDER_SCALE, 0x26334a, 0.75);
-    for (
-      let x = ARENA.left + 32 * RENDER_SCALE;
-      x < ARENA.right;
-      x += 32 * RENDER_SCALE
-    ) {
-      arena.lineBetween(
-        x,
-        ARENA.top + RENDER_SCALE,
-        x,
-        ARENA.bottom - RENDER_SCALE,
-      );
-    }
-    for (
-      let y = ARENA.top + 32 * RENDER_SCALE;
-      y < ARENA.bottom;
-      y += 32 * RENDER_SCALE
-    ) {
-      arena.lineBetween(ARENA.left + RENDER_SCALE, y, ARENA.right - RENDER_SCALE, y);
+    arena.fillStyle(0x8a7962, 0.28);
+    for (let y = ARENA.top + 10 * RENDER_SCALE; y < ARENA.bottom; y += 16 * RENDER_SCALE) {
+      for (let x = ARENA.left + 10 * RENDER_SCALE; x < ARENA.right; x += 16 * RENDER_SCALE) {
+        if (((x / RENDER_SCALE + y / RENDER_SCALE) / 16) % 3 !== 0) {
+          arena.fillCircle(x, y, RENDER_SCALE);
+        }
+      }
     }
 
     this.collectionZone = this.add
@@ -78,24 +64,24 @@ export class StartupScene extends Phaser.Scene {
         320 * RENDER_SCALE,
         320 * RENDER_SCALE,
         this.getCollectionDistance(),
-        0x38bdf8,
-        0.12,
+        0xc93324,
+        0.08,
       )
-      .setStrokeStyle(2 * RENDER_SCALE, 0x7dd3fc, 0.8);
+      .setStrokeStyle(2 * RENDER_SCALE, 0xc93324, 1);
 
     this.resources = RESOURCE_LOCATIONS.map(({ x, y }) =>
       this.add
-        .circle(x * RENDER_SCALE, y * RENDER_SCALE, RESOURCE_RADIUS, 0xfacc15)
-        .setStrokeStyle(3 * RENDER_SCALE, 0xfef3c7),
+        .circle(x * RENDER_SCALE, y * RENDER_SCALE, RESOURCE_RADIUS, 0xe2a82e)
+        .setStrokeStyle(3 * RENDER_SCALE, 0x191815),
     );
 
     this.player = this.add
-      .circle(320 * RENDER_SCALE, 320 * RENDER_SCALE, PLAYER_RADIUS, 0x38bdf8)
-      .setStrokeStyle(3 * RENDER_SCALE, 0xe0f2fe);
+      .circle(320 * RENDER_SCALE, 320 * RENDER_SCALE, PLAYER_RADIUS, 0xc93324)
+      .setStrokeStyle(3 * RENDER_SCALE, 0x191815);
 
     this.destinationMarker = this.add
       .circle(320 * RENDER_SCALE, 320 * RENDER_SCALE, 8 * RENDER_SCALE)
-      .setStrokeStyle(2 * RENDER_SCALE, 0xfacc15)
+      .setStrokeStyle(2 * RENDER_SCALE, 0x191815)
       .setVisible(false);
 
     this.input.on(Phaser.Input.Events.POINTER_DOWN, this.setDestination, this);
@@ -118,10 +104,11 @@ export class StartupScene extends Phaser.Scene {
       }
     }
 
+    const collectionDistance = this.getCollectionDistance();
     this.collectionZone
       .setPosition(this.player.x, this.player.y)
-      .setRadius(this.getCollectionDistance());
-    this.collectResources();
+      .setRadius(collectionDistance);
+    this.collectResources(collectionDistance);
   }
 
   private setDestination(pointer: Phaser.Input.Pointer): void {
@@ -149,9 +136,7 @@ export class StartupScene extends Phaser.Scene {
     this.destinationMarker.setPosition(destinationX, destinationY).setVisible(true);
   }
 
-  private collectResources(): void {
-    const collectionDistance = this.getCollectionDistance();
-
+  private collectResources(collectionDistance: number): void {
     this.resources = this.resources.filter((resource) => {
       if (
         Phaser.Math.Distance.Between(
@@ -217,8 +202,8 @@ export class StartupScene extends Phaser.Scene {
 
     const position = Phaser.Utils.Array.GetRandom(positions);
     const resource = this.add
-      .circle(position.x, position.y, RESOURCE_RADIUS, 0xfacc15)
-      .setStrokeStyle(3 * RENDER_SCALE, 0xfef3c7);
+      .circle(position.x, position.y, RESOURCE_RADIUS, 0xe2a82e)
+      .setStrokeStyle(3 * RENDER_SCALE, 0x191815);
 
     this.resources.push(resource);
   }

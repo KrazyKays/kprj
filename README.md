@@ -8,9 +8,10 @@ Cliquez ou touchez un point de l’arène pour y déplacer le joueur. Cliquez ou
 touchez une autre position pendant son déplacement pour changer sa destination.
 Les clics et touchers en dehors de l’arène sont ignorés.
 
-Le joueur ramasse les ressources dorées en passant dessus. Le compteur dans le
-panneau augmente à chaque ressource collectée. Une ressource réapparaît après
-trois secondes à un emplacement libre de l’arène.
+Le joueur ramasse les ressources dorées lorsque leur centre atteint le cercle
+rouge autour de lui ; ce cercle indique la même portée que celle vérifiée par le
+jeu. Le compteur dans le panneau augmente à chaque ressource collectée. Une
+ressource réapparaît après trois secondes à un emplacement libre de l’arène.
 
 La zone de collecte est matérialisée par un halo autour du joueur et s’élargit
 avec le bonus du Moustique doré. Les ressources servent à invoquer un compagnon
@@ -26,6 +27,9 @@ de la page.
 L’arène conserve un format carré : le panneau de ressources et d’actions est
 placé à côté sur grand écran et sous l’arène sur téléphone. Les emplacements du
 panneau d’actions sont réservés aux futures fonctionnalités.
+
+L’interface adopte une esthétique de fanzine photocopié : papier cassé, trames
+imprimées, contours noirs francs et accents rouge brique.
 
 ## Développement
 

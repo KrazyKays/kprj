@@ -3,36 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#111827" />
+    <meta name="theme-color" content="#f2ead9" />
     <title>KattaK</title>
   </head>
   <body>
     <main class="game-layout">
       <section class="arena-column" aria-labelledby="game-title">
         <header class="arena-header">
-          <h1 id="game-title">KattaK</h1>
+          <h1 id="game-title">KattaK<span>!</span></h1>
         </header>
         <div id="game" aria-label="Arène interactive"></div>
-        <p class="arena-instructions">Cliquez ou touchez l’arène pour déplacer le joueur.</p>
+        <p class="arena-instructions"><strong>RÈGLE 01</strong> Cliquez ou touchez pour déplacer le joueur. Le cercle rouge est la limite exacte où les ressources sont ramassées.</p>
       </section>
 
       <aside class="game-panel" aria-label="Ressources et actions">
         <section class="panel-card" aria-labelledby="resources-title">
-          <h2 id="resources-title">Ressources</h2>
+          <h2 id="resources-title"><span>01</span> Butin</h2>
           <p class="resource-total">
             <output id="resource-count" aria-label="Ressources disponibles" aria-live="polite">0</output>
             <span>disponibles</span>
           </p>
-          <p class="panel-placeholder">Ramassez des ressources dorées pour invoquer des compagnons.</p>
+          <p class="panel-placeholder">Ramassez les jetons dorés pour recruter des compagnons.</p>
         </section>
         <section class="panel-card" aria-labelledby="actions-title">
-          <h2 id="actions-title">Actions</h2>
+          <h2 id="actions-title"><span>02</span> Recrutement</h2>
           <button id="summon-button" class="summon-button" type="button" disabled>
             Invoquer · 5 ressources
           </button>
           <p id="summon-result" class="summon-result" role="status" aria-live="polite"></p>
           <ul id="companion-list" class="companion-list" aria-label="Compagnons"></ul>
-          <p class="panel-placeholder">La progression n’est pas encore sauvegardée.</p>
+          <p class="panel-placeholder">La partie s’efface au prochain rechargement.</p>
         </section>
       </aside>
     </main>
