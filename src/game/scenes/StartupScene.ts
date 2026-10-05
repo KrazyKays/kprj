@@ -8,6 +8,7 @@ const ARENA = {
 };
 const PLAYER_RADIUS = 16;
 const PLAYER_SPEED = 240;
+const TEXT_RESOLUTION = Math.min(Math.max(window.devicePixelRatio, 1), 2);
 
 export class StartupScene extends Phaser.Scene {
   private player!: Phaser.GameObjects.Arc;
@@ -50,6 +51,7 @@ export class StartupScene extends Phaser.Scene {
         fontFamily: "sans-serif",
         fontSize: "20px",
         fontStyle: "bold",
+        resolution: TEXT_RESOLUTION,
       })
       .setOrigin(0.5);
 
@@ -58,6 +60,7 @@ export class StartupScene extends Phaser.Scene {
         color: "#cbd5e1",
         fontFamily: "sans-serif",
         fontSize: "16px",
+        resolution: TEXT_RESOLUTION,
       })
       .setOrigin(0.5);
 
