@@ -12,6 +12,14 @@ Le joueur ramasse les ressources dorées en passant dessus. Le compteur dans le
 panneau augmente à chaque ressource collectée. Une ressource réapparaît après
 trois secondes à un emplacement libre de l’arène.
 
+Les ressources servent à invoquer un compagnon passif pour 5 ressources. Les
+doublons augmentent son niveau jusqu’au niveau 3 ; les compagnons déjà au niveau
+maximal ne sont plus inclus dans les tirages, qui ont des chances égales parmi
+les compagnons encore améliorables. Les trois compagnons améliorent
+respectivement le rayon de collecte (+25 % par niveau), la vitesse du joueur
+(+15 % par niveau) et le délai de réapparition des ressources (-15 % par niveau).
+La progression est réinitialisée au rechargement de la page.
+
 L’arène conserve un format carré : le panneau de ressources et d’actions est
 placé à côté sur grand écran et sous l’arène sur téléphone. Les emplacements du
 panneau d’actions sont réservés aux futures fonctionnalités.
@@ -26,6 +34,7 @@ npm run dev
 ## Vérification et build
 
 ```sh
+npm test
 npm run typecheck
 npm run build
 npm run preview

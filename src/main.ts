@@ -1,7 +1,9 @@
 import Phaser from "phaser";
 import { createGameConfig } from "./game/config";
-import { bindResourceCounter } from "./ui/ResourceCounter";
+import { GameProgression } from "./game/progression";
+import { bindProgressionUi } from "./ui/ProgressionUi";
 import "./style.css";
 
-const game = new Phaser.Game(createGameConfig());
-bindResourceCounter(game);
+const progression = new GameProgression();
+new Phaser.Game(createGameConfig(progression));
+bindProgressionUi(progression);

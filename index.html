@@ -20,14 +20,19 @@
         <section class="panel-card" aria-labelledby="resources-title">
           <h2 id="resources-title">Ressources</h2>
           <p class="resource-total">
-            <output id="resource-count" aria-label="Ressources collectées" aria-live="polite">0</output>
-            <span>collectées</span>
+            <output id="resource-count" aria-label="Ressources disponibles" aria-live="polite">0</output>
+            <span>disponibles</span>
           </p>
-          <p class="panel-placeholder">Déplacez le joueur jusqu’aux ressources dorées pour les ramasser.</p>
+          <p class="panel-placeholder">Ramassez des ressources dorées pour invoquer des compagnons.</p>
         </section>
         <section class="panel-card" aria-labelledby="actions-title">
           <h2 id="actions-title">Actions</h2>
-          <p class="panel-placeholder">Les actions annexes prendront place ici.</p>
+          <button id="summon-button" class="summon-button" type="button" disabled>
+            Invoquer · 5 ressources
+          </button>
+          <p id="summon-result" class="summon-result" role="status" aria-live="polite"></p>
+          <ul id="companion-list" class="companion-list" aria-label="Compagnons"></ul>
+          <p class="panel-placeholder">La progression n’est pas encore sauvegardée.</p>
         </section>
       </aside>
     </main>

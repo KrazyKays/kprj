@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { RESOURCE_COUNT_CHANGED } from "../events";
+import type { GameProgression } from "../progression";
 import { RENDER_SCALE } from "../renderScale";
 
 const ARENA = {
@@ -28,9 +28,8 @@ export class StartupScene extends Phaser.Scene {
   private destination: Phaser.Math.Vector2 | null = null;
   private destinationMarker!: Phaser.GameObjects.Arc;
   private resources: Phaser.GameObjects.Arc[] = [];
-  private resourceCount = 0;
 
-  constructor() {
+  constructor(private readonly progression: GameProgression) {
     super("startup");
   }
 
@@ -96,7 +95,7 @@ export class StartupScene extends Phaser.Scene {
       const deltaX = this.destination.x - this.player.x;
       const deltaY = this.destination.y - this.player.y;
       const distance = Math.hypot(deltaX, deltaY);
-      const step = PLAYER_SPEED * (delta / 1000);
+      const step = this.progression.getMovementSpeed(PLAYER_SPEED) * (delta / 1000);
 
       if (distance <= step) {
         this.player.setPosition(this.destination.x, this.destination.y);
@@ -137,7 +136,9 @@ export class StartupScene extends Phaser.Scene {
   }
 
   private collectResources(): void {
-    const collectionDistance = PLAYER_RADIUS + RESOURCE_RADIUS;
+    const collectionDistance = this.progression.getCollectionDistance(
+      PLAYER_RADIUS + RESOURCE_RADIUS,
+    );
 
     this.resources = this.resources.filter((resource) => {
       if (
@@ -152,9 +153,13 @@ export class StartupScene extends Phaser.Scene {
       }
 
       resource.destroy();
-      this.resourceCount += 1;
-      this.game.events.emit(RESOURCE_COUNT_CHANGED, this.resourceCount);
-      this.time.delayedCall(RESOURCE_RESPAWN_DELAY, this.respawnResource, [], this);
+      this.progression.collectResource();
+      this.time.delayedCall(
+        this.progression.getResourceRespawnDelay(RESOURCE_RESPAWN_DELAY),
+        this.respawnResource,
+        [],
+        this,
+      );
       return false;
     });
   }
