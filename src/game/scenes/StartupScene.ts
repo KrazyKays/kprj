@@ -2,10 +2,10 @@ import Phaser from "phaser";
 import { RENDER_SCALE } from "../renderScale";
 
 const ARENA = {
-  left: 32 * RENDER_SCALE,
-  top: 72 * RENDER_SCALE,
-  right: 928 * RENDER_SCALE,
-  bottom: 492 * RENDER_SCALE,
+  left: 24 * RENDER_SCALE,
+  top: 24 * RENDER_SCALE,
+  right: 616 * RENDER_SCALE,
+  bottom: 616 * RENDER_SCALE,
 };
 const PLAYER_RADIUS = 16 * RENDER_SCALE;
 const PLAYER_SPEED = 240 * RENDER_SCALE;
@@ -53,39 +53,17 @@ export class StartupScene extends Phaser.Scene {
     for (
       let y = ARENA.top + 32 * RENDER_SCALE;
       y < ARENA.bottom;
-      y += 32 * RENDER_SCALE
+      y +=       32 * RENDER_SCALE
     ) {
       arena.lineBetween(ARENA.left + RENDER_SCALE, y, ARENA.right - RENDER_SCALE, y);
     }
 
-    this.add
-      .text(480 * RENDER_SCALE, 30 * RENDER_SCALE, "ARÈNE", {
-        color: "#f9fafb",
-        fontFamily: "sans-serif",
-        fontSize: `${20 * RENDER_SCALE}px`,
-        fontStyle: "bold",
-      })
-      .setOrigin(0.5);
-
-    this.add
-      .text(
-        480 * RENDER_SCALE,
-        518 * RENDER_SCALE,
-        "Cliquez ou touchez l'arène pour vous déplacer",
-        {
-          color: "#cbd5e1",
-          fontFamily: "sans-serif",
-          fontSize: `${16 * RENDER_SCALE}px`,
-        },
-      )
-      .setOrigin(0.5);
-
     this.player = this.add
-      .circle(480 * RENDER_SCALE, 282 * RENDER_SCALE, PLAYER_RADIUS, 0x38bdf8)
+      .circle(320 * RENDER_SCALE, 320 * RENDER_SCALE, PLAYER_RADIUS, 0x38bdf8)
       .setStrokeStyle(3 * RENDER_SCALE, 0xe0f2fe);
 
     this.destinationMarker = this.add
-      .circle(480 * RENDER_SCALE, 282 * RENDER_SCALE, 8 * RENDER_SCALE)
+      .circle(320 * RENDER_SCALE, 320 * RENDER_SCALE, 8 * RENDER_SCALE)
       .setStrokeStyle(2 * RENDER_SCALE, 0xfacc15)
       .setVisible(false);
 

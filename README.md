@@ -8,6 +8,11 @@ Cliquez ou touchez un point de l’arène pour y déplacer le joueur. Cliquez ou
 touchez une autre position pendant son déplacement pour changer sa destination.
 Les clics et touchers en dehors de l’arène sont ignorés.
 
+L’arène conserve un format carré : le panneau de ressources et d’actions est
+placé à côté sur grand écran et sous l’arène sur téléphone. Les emplacements du
+panneau sont préparés pour de futures fonctionnalités ; ils ne contiennent pas
+encore de compteurs ni d’actions jouables.
+
 ## Développement
 
 ```sh

@@ -7,7 +7,26 @@
     <title>KattaK</title>
   </head>
   <body>
-    <main id="game" aria-label="Zone de jeu"></main>
+    <main class="game-layout">
+      <section class="arena-column" aria-labelledby="game-title">
+        <header class="arena-header">
+          <h1 id="game-title">KattaK</h1>
+        </header>
+        <div id="game" aria-label="Arène interactive"></div>
+        <p class="arena-instructions">Cliquez ou touchez l’arène pour déplacer le joueur.</p>
+      </section>
+
+      <aside class="game-panel" aria-label="Ressources et actions">
+        <section class="panel-card" aria-labelledby="resources-title">
+          <h2 id="resources-title">Ressources</h2>
+          <p class="panel-placeholder">Le compteur apparaîtra ici lorsque les collectibles seront ajoutés.</p>
+        </section>
+        <section class="panel-card" aria-labelledby="actions-title">
+          <h2 id="actions-title">Actions</h2>
+          <p class="panel-placeholder">Les actions annexes prendront place ici.</p>
+        </section>
+      </aside>
+    </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
