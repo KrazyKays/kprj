@@ -150,6 +150,28 @@ export class StartupScene extends Phaser.Scene {
         return true;
       }
 
+      const pickupFeedback = this.add
+        .text(resource.x, resource.y - 20 * RENDER_SCALE, "+1 RESSOURCE", {
+          fontFamily: "Impact, Arial, sans-serif",
+          fontSize: `${16 * RENDER_SCALE}px`,
+          fontStyle: "bold",
+          color: "#c93324",
+          stroke: "#f4eddf",
+          strokeThickness: 3 * RENDER_SCALE,
+        })
+        .setOrigin(0.5)
+        .setDepth(10);
+
+      this.tweens.add({
+        targets: pickupFeedback,
+        y: pickupFeedback.y - 24 * RENDER_SCALE,
+        alpha: 0,
+        scale: 1.1,
+        duration: 1000,
+        ease: "Cubic.Out",
+        onComplete: () => pickupFeedback.destroy(),
+      });
+
       resource.destroy();
       this.progression.collectResource();
       this.time.delayedCall(
