@@ -11,6 +11,9 @@ const ARENA = {
 const PLAYER_RADIUS = 16 * RENDER_SCALE;
 const PLAYER_SPEED = 240 * RENDER_SCALE;
 const RESOURCE_RADIUS = 12 * RENDER_SCALE;
+const RESOURCE_RESPAWN_DELAY = 3000;
+const RESOURCE_RESPAWN_RETRY_DELAY = 1000;
+const RESOURCE_SPAWN_SPACING = RESOURCE_RADIUS * 2 + 8 * RENDER_SCALE;
 const RESOURCE_LOCATIONS = [
   { x: 112, y: 128 },
   { x: 520, y: 136 },
@@ -151,7 +154,49 @@ export class StartupScene extends Phaser.Scene {
       resource.destroy();
       this.resourceCount += 1;
       this.game.events.emit(RESOURCE_COUNT_CHANGED, this.resourceCount);
+      this.time.delayedCall(RESOURCE_RESPAWN_DELAY, this.respawnResource, [], this);
       return false;
     });
+  }
+
+  private respawnResource(): void {
+    const positions: Phaser.Math.Vector2[] = [];
+
+    for (
+      let y = ARENA.top + RESOURCE_RADIUS;
+      y <= ARENA.bottom - RESOURCE_RADIUS;
+      y += RESOURCE_SPAWN_SPACING
+    ) {
+      for (
+        let x = ARENA.left + RESOURCE_RADIUS;
+        x <= ARENA.right - RESOURCE_RADIUS;
+        x += RESOURCE_SPAWN_SPACING
+      ) {
+        const playerClear =
+          Phaser.Math.Distance.Between(x, y, this.player.x, this.player.y) >
+          PLAYER_RADIUS + RESOURCE_RADIUS + 8 * RENDER_SCALE;
+        const resourcesClear = this.resources.every(
+          (resource) =>
+            Phaser.Math.Distance.Between(x, y, resource.x, resource.y) >
+            RESOURCE_SPAWN_SPACING,
+        );
+
+        if (playerClear && resourcesClear) {
+          positions.push(new Phaser.Math.Vector2(x, y));
+        }
+      }
+    }
+
+    if (positions.length === 0) {
+      this.time.delayedCall(RESOURCE_RESPAWN_RETRY_DELAY, this.respawnResource, [], this);
+      return;
+    }
+
+    const position = Phaser.Utils.Array.GetRandom(positions);
+    const resource = this.add
+      .circle(position.x, position.y, RESOURCE_RADIUS, 0xfacc15)
+      .setStrokeStyle(3 * RENDER_SCALE, 0xfef3c7);
+
+    this.resources.push(resource);
   }
 }

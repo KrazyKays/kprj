@@ -9,8 +9,8 @@ touchez une autre position pendant son déplacement pour changer sa destination.
 Les clics et touchers en dehors de l’arène sont ignorés.
 
 Le joueur ramasse les ressources dorées en passant dessus. Le compteur dans le
-panneau augmente à chaque ressource collectée. Les emplacements sont fixes pour
-le moment ; ils ne réapparaissent pas.
+panneau augmente à chaque ressource collectée. Une ressource réapparaît après
+trois secondes à un emplacement libre de l’arène.
 
 L’arène conserve un format carré : le panneau de ressources et d’actions est
 placé à côté sur grand écran et sous l’arène sur téléphone. Les emplacements du
