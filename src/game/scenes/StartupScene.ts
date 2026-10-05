@@ -1,14 +1,14 @@
 import Phaser from "phaser";
+import { RENDER_SCALE } from "../renderScale";
 
 const ARENA = {
-  left: 32,
-  top: 72,
-  right: 928,
-  bottom: 492,
+  left: 32 * RENDER_SCALE,
+  top: 72 * RENDER_SCALE,
+  right: 928 * RENDER_SCALE,
+  bottom: 492 * RENDER_SCALE,
 };
-const PLAYER_RADIUS = 16;
-const PLAYER_SPEED = 240;
-const TEXT_RESOLUTION = Math.min(Math.max(window.devicePixelRatio, 1), 2);
+const PLAYER_RADIUS = 16 * RENDER_SCALE;
+const PLAYER_SPEED = 240 * RENDER_SCALE;
 
 export class StartupScene extends Phaser.Scene {
   private player!: Phaser.GameObjects.Arc;
@@ -27,50 +27,66 @@ export class StartupScene extends Phaser.Scene {
       ARENA.top,
       ARENA.right - ARENA.left,
       ARENA.bottom - ARENA.top,
-      12,
+      12 * RENDER_SCALE,
     );
-    arena.lineStyle(2, 0x3b4b67, 1);
+    arena.lineStyle(2 * RENDER_SCALE, 0x3b4b67, 1);
     arena.strokeRoundedRect(
       ARENA.left,
       ARENA.top,
       ARENA.right - ARENA.left,
       ARENA.bottom - ARENA.top,
-      12,
+      12 * RENDER_SCALE,
     );
-    arena.lineStyle(1, 0x26334a, 0.75);
-    for (let x = ARENA.left + 32; x < ARENA.right; x += 32) {
-      arena.lineBetween(x, ARENA.top + 1, x, ARENA.bottom - 1);
+    arena.lineStyle(RENDER_SCALE, 0x26334a, 0.75);
+    for (
+      let x = ARENA.left + 32 * RENDER_SCALE;
+      x < ARENA.right;
+      x += 32 * RENDER_SCALE
+    ) {
+      arena.lineBetween(
+        x,
+        ARENA.top + RENDER_SCALE,
+        x,
+        ARENA.bottom - RENDER_SCALE,
+      );
     }
-    for (let y = ARENA.top + 32; y < ARENA.bottom; y += 32) {
-      arena.lineBetween(ARENA.left + 1, y, ARENA.right - 1, y);
+    for (
+      let y = ARENA.top + 32 * RENDER_SCALE;
+      y < ARENA.bottom;
+      y += 32 * RENDER_SCALE
+    ) {
+      arena.lineBetween(ARENA.left + RENDER_SCALE, y, ARENA.right - RENDER_SCALE, y);
     }
 
     this.add
-      .text(480, 30, "ARÈNE", {
+      .text(480 * RENDER_SCALE, 30 * RENDER_SCALE, "ARÈNE", {
         color: "#f9fafb",
         fontFamily: "sans-serif",
-        fontSize: "20px",
+        fontSize: `${20 * RENDER_SCALE}px`,
         fontStyle: "bold",
-        resolution: TEXT_RESOLUTION,
       })
       .setOrigin(0.5);
 
     this.add
-      .text(480, 518, "Cliquez ou touchez l'arène pour vous déplacer", {
-        color: "#cbd5e1",
-        fontFamily: "sans-serif",
-        fontSize: "16px",
-        resolution: TEXT_RESOLUTION,
-      })
+      .text(
+        480 * RENDER_SCALE,
+        518 * RENDER_SCALE,
+        "Cliquez ou touchez l'arène pour vous déplacer",
+        {
+          color: "#cbd5e1",
+          fontFamily: "sans-serif",
+          fontSize: `${16 * RENDER_SCALE}px`,
+        },
+      )
       .setOrigin(0.5);
 
     this.player = this.add
-      .circle(480, 282, PLAYER_RADIUS, 0x38bdf8)
-      .setStrokeStyle(3, 0xe0f2fe);
+      .circle(480 * RENDER_SCALE, 282 * RENDER_SCALE, PLAYER_RADIUS, 0x38bdf8)
+      .setStrokeStyle(3 * RENDER_SCALE, 0xe0f2fe);
 
     this.destinationMarker = this.add
-      .circle(480, 282, 8)
-      .setStrokeStyle(2, 0xfacc15)
+      .circle(480 * RENDER_SCALE, 282 * RENDER_SCALE, 8 * RENDER_SCALE)
+      .setStrokeStyle(2 * RENDER_SCALE, 0xfacc15)
       .setVisible(false);
 
     this.input.on(Phaser.Input.Events.POINTER_DOWN, this.setDestination, this);

@@ -1,12 +1,13 @@
 import Phaser from "phaser";
+import { RENDER_SCALE } from "./renderScale";
 import { StartupScene } from "./scenes/StartupScene";
 
 export function createGameConfig(): Phaser.Types.Core.GameConfig {
   return {
     type: Phaser.AUTO,
     parent: "game",
-    width: 960,
-    height: 540,
+    width: 960 * RENDER_SCALE,
+    height: 540 * RENDER_SCALE,
     backgroundColor: "#111827",
     input: {
       keyboard: false,
