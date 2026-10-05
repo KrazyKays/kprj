@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { isResourceTouchingCollectionZone } from "../collection";
 import type { GameProgression } from "../progression";
 import { RENDER_SCALE } from "../renderScale";
 
@@ -63,7 +64,7 @@ export class StartupScene extends Phaser.Scene {
       .circle(
         320 * RENDER_SCALE,
         320 * RENDER_SCALE,
-        this.getCollectionDistance(),
+        this.getCollectionZoneRadius(),
         0xc93324,
         0.08,
       )
@@ -104,11 +105,11 @@ export class StartupScene extends Phaser.Scene {
       }
     }
 
-    const collectionDistance = this.getCollectionDistance();
+    const collectionZoneRadius = this.getCollectionZoneRadius();
     this.collectionZone
       .setPosition(this.player.x, this.player.y)
-      .setRadius(collectionDistance);
-    this.collectResources(collectionDistance);
+      .setRadius(collectionZoneRadius);
+    this.collectResources(collectionZoneRadius);
   }
 
   private setDestination(pointer: Phaser.Input.Pointer): void {
@@ -136,15 +137,15 @@ export class StartupScene extends Phaser.Scene {
     this.destinationMarker.setPosition(destinationX, destinationY).setVisible(true);
   }
 
-  private collectResources(collectionDistance: number): void {
+  private collectResources(collectionZoneRadius: number): void {
     this.resources = this.resources.filter((resource) => {
       if (
-        Phaser.Math.Distance.Between(
-          this.player.x,
-          this.player.y,
-          resource.x,
-          resource.y,
-        ) > collectionDistance
+        !isResourceTouchingCollectionZone(
+          this.player,
+          resource,
+          collectionZoneRadius,
+          RESOURCE_RADIUS,
+        )
       ) {
         return true;
       }
@@ -161,10 +162,10 @@ export class StartupScene extends Phaser.Scene {
     });
   }
 
-  private getCollectionDistance(): number {
+  private getCollectionZoneRadius(): number {
     return this.progression.getCollectionDistance(
       PLAYER_RADIUS + RESOURCE_RADIUS,
-    );
+    ) - RESOURCE_RADIUS;
   }
 
   private respawnResource(): void {
