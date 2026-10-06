@@ -30,6 +30,8 @@ export function bindProgressionUi(progression: GameProgression): () => void {
     CompanionId,
     { level: HTMLOutputElement; bonuses: HTMLLIElement[] }
   >();
+  let renderedActions: readonly string[] | null = null;
+
   for (const companion of COMPANIONS) {
     const item = document.createElement("details");
     item.className = "companion-entry";
@@ -105,13 +107,20 @@ export function bindProgressionUi(progression: GameProgression): () => void {
         ? `Prochaine invocation : ${snapshot.summonCost} ressources.`
         : "";
 
-    actionHistory.replaceChildren(
-      ...snapshot.recentActions.map((action) => {
-        const item = document.createElement("li");
-        item.textContent = action;
-        return item;
-      }),
-    );
+    if (
+      renderedActions === null ||
+      renderedActions.length !== snapshot.recentActions.length ||
+      renderedActions.some((action, index) => action !== snapshot.recentActions[index])
+    ) {
+      actionHistory.replaceChildren(
+        ...snapshot.recentActions.map((action) => {
+          const item = document.createElement("li");
+          item.textContent = action;
+          return item;
+        }),
+      );
+      renderedActions = [...snapshot.recentActions];
+    }
   };
 
   const unsubscribe = progression.subscribe(render);
