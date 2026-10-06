@@ -87,7 +87,9 @@ export function bindProgressionUi(progression: GameProgression): () => void {
     }
 
     summonButton.disabled = allMaxed || snapshot.resources < snapshot.summonCost;
-    summonButton.textContent = `Invoquer 1 fois · ${snapshot.summonCost} ressources`;
+    summonButton.textContent = allMaxed
+      ? "Tous les compagnons sont au niveau max"
+      : `Invoquer 1 fois · ${snapshot.summonCost} ressources`;
     summonAllButton.disabled = allMaxed || snapshot.affordableSummons === 0;
     summonAllButton.textContent = allMaxed
       ? "Tous les compagnons sont au niveau max"
