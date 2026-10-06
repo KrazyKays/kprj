@@ -59,6 +59,70 @@ describe("GameProgression", () => {
     ]);
   });
 
+  it("reports the number and total cost of affordable summons", () => {
+    const progression = new GameProgression(() => 0);
+    collect(progression, 12);
+
+    expect(progression.getSnapshot()).toMatchObject({
+      resources: 12,
+      summonCost: SUMMON_COST,
+      affordableSummons: 2,
+      affordableSummonCost:
+        SUMMON_COST + (SUMMON_COST + SUMMON_COST_INCREMENT),
+    });
+  });
+
+  it("summons repeatedly with increasing costs and notifies once", () => {
+    const progression = new GameProgression(() => 0);
+    collect(progression, 12);
+    const snapshots: number[] = [];
+    progression.subscribe(({ resources }) => snapshots.push(resources));
+
+    expect(progression.summonAll()).toMatchObject({
+      kind: "success",
+      summons: [
+        { companion: { id: "mosquito" }, level: 1 },
+        { companion: { id: "mosquito" }, level: 2 },
+      ],
+    });
+    expect(progression.getSnapshot()).toMatchObject({
+      resources: 1,
+      summonCost: SUMMON_COST + 2 * SUMMON_COST_INCREMENT,
+      affordableSummons: 0,
+      companions: { mosquito: 2 },
+    });
+    expect(snapshots).toEqual([12, 1]);
+  });
+
+  it("limits batch summons to remaining companion levels", () => {
+    const progression = new GameProgression(() => 0);
+    const summonCount = MAX_COMPANION_LEVEL * 3;
+    const totalCost =
+      (summonCount *
+        (2 * SUMMON_COST + (summonCount - 1) * SUMMON_COST_INCREMENT)) /
+      2;
+    collect(progression, totalCost + 100);
+
+    for (let i = 0; i < MAX_COMPANION_LEVEL; i += 1) {
+      progression.summon();
+    }
+    expect(progression.getSnapshot().companions.mosquito).toBe(MAX_COMPANION_LEVEL);
+    expect(progression.getAffordableSummonCount()).toBe(6);
+
+    const result = progression.summonAll();
+    expect(result.kind).toBe("success");
+    if (result.kind !== "success") {
+      throw new Error("Les compagnons encore améliorable auraient dû être invoqués.");
+    }
+    expect(result.summons).toHaveLength(6);
+    expect(progression.getSnapshot().companions).toEqual({
+      mosquito: MAX_COMPANION_LEVEL,
+      rabbit: MAX_COMPANION_LEVEL,
+      snail: MAX_COMPANION_LEVEL,
+    });
+    expect(progression.getAffordableSummonCount()).toBe(0);
+  });
+
   it("applies each companion's passive bonus per level", () => {
     const mosquito = new GameProgression(() => 0);
     const rabbit = new GameProgression(() => 0.4);

@@ -195,6 +195,13 @@ canvas {
   line-height: 1.5;
 }
 
+.summon-preview {
+  margin: 0.625rem 0 0;
+  color: #655b4d;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
 .companion-list {
   display: grid;
   gap: 0.625rem;
@@ -227,6 +234,30 @@ canvas {
   color: #a9251b;
   font-size: 0.875rem;
   font-weight: 700;
+}
+
+.companion-bonus-levels {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  color: #655b4d;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  list-style: none;
+}
+
+.companion-bonus-levels li::before {
+  content: "· ";
+}
+
+.companion-bonus-levels .is-unlocked {
+  color: #353026;
+  font-weight: 700;
+}
+
+.companion-bonus-levels .is-next {
+  color: #a9251b;
 }
 
 @media (min-width: 760px) {

@@ -17,13 +17,17 @@ secondes à un emplacement libre de l’arène.
 La zone de collecte est matérialisée par un halo autour du joueur et s’élargit
 avec le bonus du Moustique doré. Les ressources servent à invoquer un compagnon
 passif : le coût commence à 5 ressources et augmente de 1 après chaque
-invocation réussie. Les doublons augmentent son niveau jusqu’au niveau 3 ; les
+invocation réussie. Le bouton d’invocation indique combien de tirages peuvent
+être financés et permet de les effectuer en une fois ; leurs résultats sont
+récapitulés dans le panneau. Les doublons augmentent le niveau du compagnon
+jusqu’au niveau 3 ; les
 compagnons déjà au niveau maximal ne sont plus inclus dans les tirages, qui ont
 des chances égales parmi les compagnons encore améliorables. Les trois
 compagnons améliorent respectivement le rayon de collecte (+25 % par niveau),
 la vitesse du joueur (+15 % par niveau) et le délai de réapparition des
-ressources (-15 % par niveau). La progression est réinitialisée au rechargement
-de la page.
+ressources (-15 % par niveau). Le panneau détaille le bonus cumulé de chaque
+niveau et met en évidence les niveaux débloqués et le prochain. La progression
+est réinitialisée au rechargement de la page.
 
 L’arène conserve un format carré : le panneau de ressources et d’actions est
 placé à côté sur grand écran et sous l’arène sur téléphone. Les emplacements du
