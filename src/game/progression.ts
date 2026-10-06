@@ -34,6 +34,17 @@ export const COMPANIONS = [
       "−45 % au délai de réapparition",
     ],
   },
+  {
+    id: "crab",
+    name: "Crabe magnétique",
+    passive:
+      "Fait apparaître un jeton aspirant par niveau ; chaque jeton absorbe les trois ressources dorées les plus proches.",
+    bonusByLevel: [
+      "1 jeton aspirant actif",
+      "2 jetons aspirants actifs",
+      "3 jetons aspirants actifs",
+    ],
+  },
 ] as const;
 
 export type CompanionId = (typeof COMPANIONS)[number]["id"];
@@ -72,6 +83,7 @@ export class GameProgression {
     mosquito: 0,
     rabbit: 0,
     snail: 0,
+    crab: 0,
   };
   private readonly recentActions: string[] = [];
   private readonly listeners = new Set<ProgressionListener>();
@@ -171,6 +183,10 @@ export class GameProgression {
 
   getResourceRespawnDelay(baseDelay: number): number {
     return Math.max(500, baseDelay * (1 - this.companionLevels.snail * 0.15));
+  }
+
+  getCompanionLevel(id: CompanionId): number {
+    return this.companionLevels[id];
   }
 
   private hasAvailableCompanions(): boolean {

@@ -2,7 +2,9 @@
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  COMPANIONS,
   GameProgression,
+  MAX_COMPANION_LEVEL,
   SUMMON_COST,
   SUMMON_COST_INCREMENT,
 } from "../src/game/progression";
@@ -34,6 +36,29 @@ afterEach(() => {
 });
 
 describe("progression UI", () => {
+  it("shows the magnetic crab and its token count at each level", () => {
+    const progression = new GameProgression(() => 0.9);
+    mountUi(progression);
+
+    expect(document.getElementById("companion-list")?.textContent).toContain(
+      "Crabe magnétique",
+    );
+    expect(document.getElementById("companion-list")?.textContent).toContain(
+      "3 jetons aspirants actifs",
+    );
+
+    for (let i = 0; i < SUMMON_COST; i += 1) {
+      progression.collectResource();
+    }
+    progression.summon();
+
+    expect(
+      document.querySelector(
+        "#companion-list details:nth-child(4) summary output",
+      )?.textContent,
+    ).toBe("Niv. 1");
+  });
+
   it("keeps the history log unchanged on collection and updates it on summon", () => {
     const progression = new GameProgression(() => 0);
     mountUi(progression);
@@ -105,7 +130,7 @@ describe("progression UI", () => {
     const summonAllButton = document.getElementById(
       "summon-all-button",
     ) as HTMLButtonElement;
-    const totalSummons = 9;
+    const totalSummons = COMPANIONS.length * MAX_COMPANION_LEVEL;
     const totalCost =
       (totalSummons *
         (2 * SUMMON_COST + (totalSummons - 1) * SUMMON_COST_INCREMENT)) /

@@ -26,10 +26,13 @@ invocation réussie. Le bouton d’invocation indique combien de tirages peuvent
 choix d’invoquer un seul compagnon. Les doublons augmentent le niveau du
 compagnon jusqu’au niveau 3 ; les
 compagnons déjà au niveau maximal ne sont plus inclus dans les tirages, qui ont
-des chances égales parmi les compagnons encore améliorables. Les trois
+des chances égales parmi les compagnons encore améliorables. Les quatre
 compagnons améliorent respectivement le rayon de collecte (+25 % par niveau),
-la vitesse du joueur (+15 % par niveau) et le délai de réapparition des
-ressources (-15 % par niveau). Le panneau détaille le bonus cumulé de chaque
+la vitesse du joueur (+15 % par niveau), le délai de réapparition des
+ressources (-15 % par niveau), et l’apparition de jetons aspirants (un par
+niveau) grâce au Crabe magnétique. Ces jetons violets absorbent jusqu’aux trois
+ressources dorées les plus proches, qui sont créditées au compteur ; ils
+réapparaissent après six secondes. Le panneau détaille le bonus de chaque
 niveau et met en évidence les niveaux débloqués et le prochain ; les détails
 peuvent être dépliés pour garder le panneau compact. Le bouton d’invocation
 groupée indique directement le nombre de tirages possibles et leur coût total ;

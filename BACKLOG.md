@@ -24,11 +24,11 @@ mécaniques ou demandent des choix de conception.
    déplacement, la première collecte et l’invocation. Chaque étape avance après
    l’action correspondante, le tutoriel peut être masqué et ne couvre pas les
    futures ressources ou actions, qui pourront ajouter leurs propres indications.
-4. **Compagnons créant des ressources à effet actif** — certains compagnons
-   font apparaître des ressources spéciales ; leur quantité dépend du niveau du
-   compagnon (1, 2 ou 3 aux niveaux correspondants). Leur récupération déclenche
-   un effet actif et ne crédite pas le compteur de ressources ordinaires.
-   Définir l’effet, sa durée et les règles de réapparition avant l’implémentation.
+4. **Compagnons créant des ressources à effet actif** — Implémenté avec le
+   Crabe magnétique : il fait apparaître un jeton aspirant par niveau (jusqu’à
+   trois). Récupérer un jeton absorbe les trois ressources dorées les plus
+   proches, même à distance, crédite celles qui sont disponibles et fait
+   réapparaître le jeton après six secondes.
 5. **Ressources alternatives pour d’autres actions** — l’obtention d’un
    compagnon spécifique débloque l’apparition d’un type de ressource alternatif ;
    la quantité de ces ressources dépend proportionnellement au niveau de ce

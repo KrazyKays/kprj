@@ -1,5 +1,8 @@
 import Phaser from "phaser";
-import { isResourceTouchingCollectionZone } from "../collection";
+import {
+  getNearestResources,
+  isResourceTouchingCollectionZone,
+} from "../collection";
 import type { GameProgression } from "../progression";
 import { RENDER_SCALE } from "../renderScale";
 import type { TutorialGuide } from "../tutorial";
@@ -14,6 +17,8 @@ const PLAYER_RADIUS = 16 * RENDER_SCALE;
 const PLAYER_SPEED = 240 * RENDER_SCALE;
 const RESOURCE_RADIUS = 12 * RENDER_SCALE;
 const RESOURCE_RESPAWN_DELAY = 3000;
+const SPECIAL_TOKEN_RESPAWN_DELAY = 6000;
+const SPECIAL_TOKEN_ABSORBED_RESOURCE_COUNT = 3;
 const RESOURCE_RESPAWN_RETRY_DELAY = 1000;
 const RESOURCE_SPAWN_SPACING = RESOURCE_RADIUS * 2 + 8 * RENDER_SCALE;
 const RESOURCE_LOCATIONS = [
@@ -31,6 +36,8 @@ export class StartupScene extends Phaser.Scene {
   private destination: Phaser.Math.Vector2 | null = null;
   private destinationMarker!: Phaser.GameObjects.Arc;
   private resources: Phaser.GameObjects.Arc[] = [];
+  private specialTokens: Phaser.GameObjects.Star[] = [];
+  private pendingSpecialTokenSpawns = 0;
 
   constructor(
     private readonly progression: GameProgression,
@@ -114,6 +121,8 @@ export class StartupScene extends Phaser.Scene {
       .setPosition(this.player.x, this.player.y)
       .setRadius(collectionZoneRadius);
     this.collectResources(collectionZoneRadius);
+    this.ensureSpecialTokens();
+    this.collectSpecialTokens(collectionZoneRadius);
   }
 
   private setDestination(pointer: Phaser.Input.Pointer): void {
@@ -196,7 +205,132 @@ export class StartupScene extends Phaser.Scene {
     ) - RESOURCE_RADIUS;
   }
 
+  private ensureSpecialTokens(): void {
+    const desiredCount = this.progression.getCompanionLevel("crab");
+    const missingCount =
+      desiredCount - this.specialTokens.length - this.pendingSpecialTokenSpawns;
+
+    for (let i = 0; i < missingCount; i += 1) {
+      this.scheduleSpecialTokenSpawn(0);
+    }
+  }
+
+  private collectSpecialTokens(collectionZoneRadius: number): void {
+    this.specialTokens = this.specialTokens.filter((token) => {
+      if (
+        !isResourceTouchingCollectionZone(
+          this.player,
+          token,
+          collectionZoneRadius,
+          RESOURCE_RADIUS,
+        )
+      ) {
+        return true;
+      }
+
+      const absorbedResources = getNearestResources(
+        token,
+        this.resources,
+        SPECIAL_TOKEN_ABSORBED_RESOURCE_COUNT,
+      );
+      const absorbedSet = new Set(absorbedResources);
+      this.resources = this.resources.filter((resource) => {
+        if (!absorbedSet.has(resource)) {
+          return true;
+        }
+
+        resource.destroy();
+        this.progression.collectResource();
+        this.tutorial.onResourceCollected();
+        this.time.delayedCall(
+          this.progression.getResourceRespawnDelay(RESOURCE_RESPAWN_DELAY),
+          this.respawnResource,
+          [],
+          this,
+        );
+        return false;
+      });
+
+      const feedback = this.add
+        .text(
+          token.x,
+          token.y - 20 * RENDER_SCALE,
+          `+${absorbedResources.length} RESSOURCE${absorbedResources.length === 1 ? "" : "S"} ASPIRÉE${absorbedResources.length === 1 ? "" : "S"}`,
+          {
+            fontFamily: "Impact, Arial, sans-serif",
+            fontSize: `${16 * RENDER_SCALE}px`,
+            fontStyle: "bold",
+            color: "#7157a5",
+            stroke: "#f4eddf",
+            strokeThickness: 3 * RENDER_SCALE,
+          },
+        )
+        .setOrigin(0.5)
+        .setDepth(10);
+
+      this.tweens.add({
+        targets: feedback,
+        y: feedback.y - 24 * RENDER_SCALE,
+        alpha: 0,
+        scale: 1.1,
+        duration: 1000,
+        ease: "Cubic.Out",
+        onComplete: () => feedback.destroy(),
+      });
+
+      token.destroy();
+      this.scheduleSpecialTokenSpawn(SPECIAL_TOKEN_RESPAWN_DELAY);
+      return false;
+    });
+  }
+
+  private scheduleSpecialTokenSpawn(delay: number): void {
+    this.pendingSpecialTokenSpawns += 1;
+    this.time.delayedCall(delay, this.spawnPendingSpecialToken, [], this);
+  }
+
+  private spawnPendingSpecialToken(): void {
+    const position = this.findAvailableResourcePosition();
+    if (!position) {
+      this.time.delayedCall(
+        RESOURCE_RESPAWN_RETRY_DELAY,
+        this.spawnPendingSpecialToken,
+        [],
+        this,
+      );
+      return;
+    }
+
+    this.pendingSpecialTokenSpawns -= 1;
+    this.specialTokens.push(
+      this.add
+        .star(
+          position.x,
+          position.y,
+          4,
+          RESOURCE_RADIUS * 0.55,
+          RESOURCE_RADIUS,
+          0x7157a5,
+        )
+        .setStrokeStyle(3 * RENDER_SCALE, 0x191815),
+    );
+  }
+
   private respawnResource(): void {
+    const position = this.findAvailableResourcePosition();
+    if (!position) {
+      this.time.delayedCall(RESOURCE_RESPAWN_RETRY_DELAY, this.respawnResource, [], this);
+      return;
+    }
+
+    const resource = this.add
+      .circle(position.x, position.y, RESOURCE_RADIUS, 0xe2a82e)
+      .setStrokeStyle(3 * RENDER_SCALE, 0x191815);
+
+    this.resources.push(resource);
+  }
+
+  private findAvailableResourcePosition(): Phaser.Math.Vector2 | null {
     const positions: Phaser.Math.Vector2[] = [];
 
     for (
@@ -212,7 +346,7 @@ export class StartupScene extends Phaser.Scene {
         const playerClear =
           Phaser.Math.Distance.Between(x, y, this.player.x, this.player.y) >
           PLAYER_RADIUS + RESOURCE_RADIUS + 8 * RENDER_SCALE;
-        const resourcesClear = this.resources.every(
+        const resourcesClear = [...this.resources, ...this.specialTokens].every(
           (resource) =>
             Phaser.Math.Distance.Between(x, y, resource.x, resource.y) >
             RESOURCE_SPAWN_SPACING,
@@ -224,16 +358,6 @@ export class StartupScene extends Phaser.Scene {
       }
     }
 
-    if (positions.length === 0) {
-      this.time.delayedCall(RESOURCE_RESPAWN_RETRY_DELAY, this.respawnResource, [], this);
-      return;
-    }
-
-    const position = Phaser.Utils.Array.GetRandom(positions);
-    const resource = this.add
-      .circle(position.x, position.y, RESOURCE_RADIUS, 0xe2a82e)
-      .setStrokeStyle(3 * RENDER_SCALE, 0x191815);
-
-    this.resources.push(resource);
+    return positions.length > 0 ? Phaser.Utils.Array.GetRandom(positions) : null;
   }
 }
