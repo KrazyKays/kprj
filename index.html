@@ -33,15 +33,15 @@
 
       <aside class="game-panel" aria-label="Ressources et actions">
         <section class="panel-card" aria-labelledby="resources-title">
-          <h2 id="resources-title"><span>01</span> Butin</h2>
+          <h2 id="resources-title">Butin</h2>
           <p class="resource-total">
             <output id="resource-count" aria-label="Pépites disponibles" aria-live="polite">0</output>
-            <span>disponibles</span>
+            <span id="resource-unit">pépites disponibles</span>
           </p>
           <p class="panel-placeholder">Ramassez les pépites pour recruter des compagnons.</p>
         </section>
         <section class="panel-card" aria-labelledby="actions-title">
-          <h2 id="actions-title"><span>02</span> Recrutement</h2>
+          <h2 id="actions-title">Recrutement</h2>
           <div class="summon-actions">
             <button id="summon-button" class="summon-button" type="button" disabled>
               Invoquer 1 fois · 5 pépites
@@ -58,7 +58,7 @@
         </section>
       </aside>
       <aside class="history-panel panel-card" aria-labelledby="history-title">
-        <h2 id="history-title"><span>03</span> Historique</h2>
+        <h2 id="history-title">Historique</h2>
         <ol id="action-history" class="action-history" role="log" aria-live="polite" aria-relevant="additions"></ol>
       </aside>
     </main>

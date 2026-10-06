@@ -1,4 +1,5 @@
 import {
+  COMPANION_RARITIES,
   COMPANIONS,
   GameProgression,
   MAX_COMPANION_LEVEL,
@@ -11,6 +12,7 @@ export function bindProgressionUi(
   tutorial: TutorialGuide,
 ): () => void {
   const resourceCount = document.getElementById("resource-count");
+  const resourceUnit = document.getElementById("resource-unit");
   const summonButton = document.getElementById("summon-button");
   const summonAllButton = document.getElementById("summon-all-button");
   const summonPreview = document.getElementById("summon-preview");
@@ -20,6 +22,7 @@ export function bindProgressionUi(
 
   if (
     !(resourceCount instanceof HTMLOutputElement) ||
+    !(resourceUnit instanceof HTMLElement) ||
     !(summonButton instanceof HTMLButtonElement) ||
     !(summonAllButton instanceof HTMLButtonElement) ||
     !(summonPreview instanceof HTMLElement) ||
@@ -32,11 +35,23 @@ export function bindProgressionUi(
 
   const companionEntries = new Map<
     CompanionId,
-    { level: HTMLOutputElement; bonuses: HTMLLIElement[] }
+    {
+      level: HTMLOutputElement;
+      rarity: HTMLElement;
+      rarityName: string;
+      bonuses: HTMLLIElement[];
+    }
   >();
   let renderedActions: readonly string[] | null = null;
 
   for (const companion of COMPANIONS) {
+    const rarityDefinition = COMPANION_RARITIES.find(
+      ({ id }) => id === companion.rarity,
+    );
+    if (!rarityDefinition) {
+      throw new Error(`La rareté de ${companion.name} ne peut pas être affichée.`);
+    }
+
     const item = document.createElement("details");
     item.className = "companion-entry";
 
@@ -52,6 +67,9 @@ export function bindProgressionUi(
     const passive = document.createElement("span");
     passive.textContent = companion.passive;
 
+    const rarity = document.createElement("span");
+    rarity.className = `companion-rarity rarity-${companion.rarity}`;
+
     const bonusLevels = document.createElement("ol");
     bonusLevels.className = "companion-bonus-levels";
     const bonuses = companion.bonusByLevel.map((bonus, index) => {
@@ -60,14 +78,21 @@ export function bindProgressionUi(
       bonusLevels.append(bonusLevel);
       return bonusLevel;
     });
-    companionEntries.set(companion.id, { level, bonuses });
+    companionEntries.set(companion.id, {
+      level,
+      rarity,
+      rarityName: rarityDefinition.name,
+      bonuses,
+    });
 
-    item.append(summary, passive, bonusLevels);
+    item.append(summary, rarity, passive, bonusLevels);
     companionList.append(item);
   }
 
   const render = (snapshot: ProgressionSnapshot): void => {
     resourceCount.value = String(snapshot.resources);
+    resourceUnit.textContent =
+      snapshot.resources === 1 ? "pépite disponible" : "pépites disponibles";
 
     let allMaxed = true;
     for (const companion of COMPANIONS) {
@@ -83,6 +108,14 @@ export function bindProgressionUi(
           : level >= MAX_COMPANION_LEVEL
             ? `Niv. ${level} · Max`
             : `Niv. ${level}`;
+      const chance = snapshot.companionChances[companion.id];
+      const formattedChance = new Intl.NumberFormat("fr-FR", {
+        maximumFractionDigits: 1,
+      }).format(chance);
+      entry.rarity.textContent =
+        chance > 0
+          ? `${entry.rarityName} · ${formattedChance} % de chance actuelle`
+          : `${entry.rarityName} · Niveau max`;
       entry.bonuses.forEach((bonus, index) => {
         bonus.classList.toggle("is-unlocked", index < level);
         bonus.classList.toggle("is-next", index === level);

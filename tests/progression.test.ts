@@ -84,6 +84,64 @@ describe("GameProgression", () => {
     });
   });
 
+  it("weights summon chances by rarity and redistributes completed rarity tiers", () => {
+    const progression = new GameProgression(() => 0);
+    expect(progression.getSnapshot().companionChances).toEqual({
+      mosquito: 35,
+      rabbit: 35,
+      snail: 20,
+      crab: 8,
+      squirrel: 2,
+    });
+
+    const commonSummons = MAX_COMPANION_LEVEL * 2;
+    const totalCost =
+      (commonSummons *
+        (2 * SUMMON_COST + (commonSummons - 1) * SUMMON_COST_INCREMENT)) /
+      2;
+    collect(progression, totalCost);
+    const result = progression.summonAll();
+
+    expect(result).toMatchObject({
+      kind: "success",
+      summons: [
+        { companion: { id: "mosquito" } },
+        { companion: { id: "mosquito" } },
+        { companion: { id: "mosquito" } },
+        { companion: { id: "rabbit" } },
+        { companion: { id: "rabbit" } },
+        { companion: { id: "rabbit" } },
+      ],
+    });
+    expect(progression.getSnapshot().companionChances).toEqual({
+      mosquito: 0,
+      rabbit: 0,
+      snail: (20 / 30) * 100,
+      crab: (8 / 30) * 100,
+      squirrel: (2 / 30) * 100,
+    });
+  });
+
+  it("selects companions according to rarity probability thresholds", () => {
+    const expectedCompanions = [
+      [0, "mosquito"],
+      [0.35, "rabbit"],
+      [0.7, "snail"],
+      [0.9, "crab"],
+      [0.98, "squirrel"],
+    ] as const;
+
+    for (const [randomValue, expectedId] of expectedCompanions) {
+      const progression = new GameProgression(() => randomValue);
+      collect(progression, SUMMON_COST);
+
+      expect(progression.summon()).toMatchObject({
+        kind: "success",
+        companion: { id: expectedId },
+      });
+    }
+  });
+
   it("summons repeatedly with increasing costs and notifies once", () => {
     const progression = new GameProgression(() => 0);
     collect(progression, 12);
@@ -174,9 +232,9 @@ describe("GameProgression", () => {
 
   it("applies each companion's passive bonus per level", () => {
     const mosquito = new GameProgression(() => 0);
-    const rabbit = new GameProgression(() => 0.21);
-    const snail = new GameProgression(() => 0.41);
-    const crab = new GameProgression(() => 0.61);
+    const rabbit = new GameProgression(() => 0.4);
+    const snail = new GameProgression(() => 0.75);
+    const crab = new GameProgression(() => 0.91);
     const squirrel = new GameProgression(() => 0.99);
 
     for (const progression of [mosquito, rabbit, snail, crab, squirrel]) {

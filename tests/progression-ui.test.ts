@@ -16,6 +16,7 @@ let unsubscribe: (() => void) | undefined;
 function mountUi(progression: GameProgression): () => void {
   document.body.innerHTML = `
     <output id="resource-count"></output>
+    <span id="resource-unit"></span>
     <button id="summon-button" type="button"></button>
     <button id="summon-all-button" type="button"></button>
     <p id="summon-preview"></p>
@@ -37,7 +38,7 @@ afterEach(() => {
 
 describe("progression UI", () => {
   it("shows the renamed companions and their bonuses", () => {
-    const progression = new GameProgression(() => 0.7);
+    const progression = new GameProgression(() => 0.91);
     mountUi(progression);
 
     expect(document.getElementById("companion-list")?.textContent).toContain(
@@ -52,6 +53,12 @@ describe("progression UI", () => {
     expect(document.getElementById("companion-list")?.textContent).toContain(
       "+6 pépites de base au maximum à l’écran",
     );
+    expect(document.getElementById("companion-list")?.textContent).toContain(
+      "Commun · 35 % de chance actuelle",
+    );
+    expect(document.getElementById("companion-list")?.textContent).toContain(
+      "Épique · 2 % de chance actuelle",
+    );
 
     for (let i = 0; i < SUMMON_COST; i += 1) {
       progression.collectResource();
@@ -63,6 +70,18 @@ describe("progression UI", () => {
         "#companion-list details:nth-child(4) summary output",
       )?.textContent,
     ).toBe("Niv. 1");
+  });
+
+  it("shows pépites as the loot unit, including the singular form", () => {
+    const progression = new GameProgression();
+    mountUi(progression);
+    const unit = document.getElementById("resource-unit");
+
+    expect(unit?.textContent).toBe("pépites disponibles");
+    progression.collectResource();
+    expect(unit?.textContent).toBe("pépite disponible");
+    progression.collectResource();
+    expect(unit?.textContent).toBe("pépites disponibles");
   });
 
   it("keeps the history log unchanged on collection and updates it on summon", () => {

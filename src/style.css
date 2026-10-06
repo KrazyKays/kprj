@@ -171,12 +171,6 @@ canvas {
   text-transform: uppercase;
 }
 
-.panel-card h2 span {
-  color: #c93324;
-  font-family: "Courier New", monospace;
-  font-size: 0.75rem;
-}
-
 .resource-total {
   display: flex;
   align-items: baseline;
@@ -325,6 +319,28 @@ canvas {
   color: #5e5548;
   font-size: 0.8rem;
   line-height: 1.4;
+}
+
+.companion-entry .companion-rarity {
+  margin-top: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.companion-rarity.rarity-common {
+  color: #655b4d;
+}
+
+.companion-rarity.rarity-uncommon {
+  color: #3c704c;
+}
+
+.companion-rarity.rarity-rare {
+  color: #345f91;
+}
+
+.companion-rarity.rarity-epic {
+  color: #7157a5;
 }
 
 .companion-level {

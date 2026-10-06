@@ -3,10 +3,20 @@ export const SUMMON_COST_INCREMENT = 1;
 export const MAX_COMPANION_LEVEL = 3;
 export const MAX_RECENT_ACTIONS = 5;
 
+export const COMPANION_RARITIES = [
+  { id: "common", name: "Commun", weight: 70 },
+  { id: "uncommon", name: "Peu commun", weight: 20 },
+  { id: "rare", name: "Rare", weight: 8 },
+  { id: "epic", name: "Épique", weight: 2 },
+] as const;
+
+export type CompanionRarity = (typeof COMPANION_RARITIES)[number]["id"];
+
 export const COMPANIONS = [
   {
     id: "mosquito",
     name: "Moustique magnétique",
+    rarity: "common",
     passive: "+25 % au rayon de collecte par niveau.",
     bonusByLevel: [
       "+25 % au rayon de collecte",
@@ -17,6 +27,7 @@ export const COMPANIONS = [
   {
     id: "rabbit",
     name: "Lapin rapide",
+    rarity: "common",
     passive: "+15 % à la vitesse de déplacement par niveau.",
     bonusByLevel: [
       "+15 % à la vitesse de déplacement",
@@ -27,6 +38,7 @@ export const COMPANIONS = [
   {
     id: "snail",
     name: "Singe productif",
+    rarity: "uncommon",
     passive: "Réduit de 15 % le délai de réapparition par niveau.",
     bonusByLevel: [
       "−15 % au délai de réapparition",
@@ -37,6 +49,7 @@ export const COMPANIONS = [
   {
     id: "crab",
     name: "Crabe trou noir",
+    rarity: "rare",
     passive:
       "Fait apparaître un jeton aspirant par niveau ; chaque jeton absorbe les trois pépites les plus proches.",
     bonusByLevel: [
@@ -48,6 +61,7 @@ export const COMPANIONS = [
   {
     id: "squirrel",
     name: "Écureuil prévoyant",
+    rarity: "epic",
     passive: "Augmente le nombre maximal de pépites de base dans l’arène.",
     bonusByLevel: [
       "+2 pépites de base au maximum à l’écran",
@@ -65,6 +79,7 @@ export interface ProgressionSnapshot {
   affordableSummons: number;
   affordableSummonCost: number;
   companions: Readonly<Record<CompanionId, number>>;
+  companionChances: Readonly<Record<CompanionId, number>>;
   recentActions: readonly string[];
 }
 
@@ -109,6 +124,7 @@ export class GameProgression {
       affordableSummons: affordableSummons.count,
       affordableSummonCost: affordableSummons.cost,
       companions: { ...this.companionLevels },
+      companionChances: this.getCompanionChances(),
       recentActions: [...this.recentActions],
     };
   }
@@ -210,6 +226,38 @@ export class GameProgression {
     );
   }
 
+  private getCompanionChances(): Record<CompanionId, number> {
+    const chances: Record<CompanionId, number> = {
+      mosquito: 0,
+      rabbit: 0,
+      snail: 0,
+      crab: 0,
+      squirrel: 0,
+    };
+    const availableByRarity = COMPANION_RARITIES.map((rarity) => ({
+      ...rarity,
+      companions: COMPANIONS.filter(
+        ({ id, rarity: companionRarity }) =>
+          companionRarity === rarity.id &&
+          this.companionLevels[id] < MAX_COMPANION_LEVEL,
+      ),
+    })).filter(({ companions }) => companions.length > 0);
+    const totalWeight = availableByRarity.reduce(
+      (total, rarity) => total + rarity.weight,
+      0,
+    );
+
+    for (const rarity of availableByRarity) {
+      const chancePerCompanion =
+        (rarity.weight / totalWeight / rarity.companions.length) * 100;
+      for (const companion of rarity.companions) {
+        chances[companion.id] = chancePerCompanion;
+      }
+    }
+
+    return chances;
+  }
+
   private recordSummonAction(
     companion: (typeof COMPANIONS)[number],
     level: number,
@@ -240,11 +288,16 @@ export class GameProgression {
 
     this.resources -= summonCost;
     this.successfulSummons += 1;
-    const randomIndex = Math.min(
-      Math.floor(this.random() * availableCompanions.length),
-      availableCompanions.length - 1,
-    );
-    const companion = availableCompanions[randomIndex];
+    const chances = this.getCompanionChances();
+    let roll = this.random() * 100;
+    let companion = availableCompanions[availableCompanions.length - 1];
+    for (const candidate of availableCompanions) {
+      roll -= chances[candidate.id];
+      if (roll < 0) {
+        companion = candidate;
+        break;
+      }
+    }
     const level = ++this.companionLevels[companion.id];
 
     return { kind: "success", companion, level };
