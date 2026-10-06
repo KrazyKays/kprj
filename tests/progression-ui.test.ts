@@ -36,15 +36,21 @@ afterEach(() => {
 });
 
 describe("progression UI", () => {
-  it("shows the magnetic crab and its token count at each level", () => {
-    const progression = new GameProgression(() => 0.9);
+  it("shows the renamed companions and their bonuses", () => {
+    const progression = new GameProgression(() => 0.7);
     mountUi(progression);
 
     expect(document.getElementById("companion-list")?.textContent).toContain(
-      "Crabe magnétique",
+      "Crabe trou noir",
     );
     expect(document.getElementById("companion-list")?.textContent).toContain(
       "3 jetons aspirants actifs",
+    );
+    expect(document.getElementById("companion-list")?.textContent).toContain(
+      "Écureuil prévoyant",
+    );
+    expect(document.getElementById("companion-list")?.textContent).toContain(
+      "+6 pépites de base au maximum à l’écran",
     );
 
     for (let i = 0; i < SUMMON_COST; i += 1) {
@@ -75,7 +81,7 @@ describe("progression UI", () => {
     (document.getElementById("summon-button") as HTMLButtonElement).click();
 
     expect(historyUpdates).toHaveBeenCalledOnce();
-    expect(history?.textContent).toContain("Moustique doré invoqué");
+    expect(history?.textContent).toContain("Moustique magnétique invoqué");
   });
 
   it("shows the batch cost in its label and highlights it only for multiple summons", () => {
@@ -90,7 +96,7 @@ describe("progression UI", () => {
     }
 
     expect(summonAllButton.textContent).toContain("2 fois");
-    expect(summonAllButton.textContent).toContain("11 ressources");
+    expect(summonAllButton.textContent).toContain("11 pépites");
     expect(summonAllButton.classList.contains("is-multi-summon")).toBe(true);
 
     (document.getElementById("summon-button") as HTMLButtonElement).click();

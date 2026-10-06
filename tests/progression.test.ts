@@ -67,6 +67,7 @@ describe("GameProgression", () => {
       MAX_COMPANION_LEVEL,
       MAX_COMPANION_LEVEL,
       MAX_COMPANION_LEVEL,
+      MAX_COMPANION_LEVEL,
     ]);
   });
 
@@ -131,8 +132,8 @@ describe("GameProgression", () => {
       "Lapin rapide invoqué · niveau 3.",
       "Lapin rapide invoqué · niveau 2.",
       "Lapin rapide invoqué · niveau 1.",
-      "Moustique doré invoqué · niveau 3.",
-      "Moustique doré invoqué · niveau 2.",
+      "Moustique magnétique invoqué · niveau 3.",
+      "Moustique magnétique invoqué · niveau 2.",
     ]);
   });
 
@@ -166,17 +167,19 @@ describe("GameProgression", () => {
       rabbit: MAX_COMPANION_LEVEL,
       snail: MAX_COMPANION_LEVEL,
       crab: MAX_COMPANION_LEVEL,
+      squirrel: MAX_COMPANION_LEVEL,
     });
     expect(progression.getAffordableSummonCount()).toBe(0);
   });
 
   it("applies each companion's passive bonus per level", () => {
     const mosquito = new GameProgression(() => 0);
-    const rabbit = new GameProgression(() => 0.4);
-    const snail = new GameProgression(() => 0.6);
-    const crab = new GameProgression(() => 0.9);
+    const rabbit = new GameProgression(() => 0.21);
+    const snail = new GameProgression(() => 0.41);
+    const crab = new GameProgression(() => 0.61);
+    const squirrel = new GameProgression(() => 0.99);
 
-    for (const progression of [mosquito, rabbit, snail, crab]) {
+    for (const progression of [mosquito, rabbit, snail, crab, squirrel]) {
       collect(
         progression,
         SUMMON_COST + (SUMMON_COST + SUMMON_COST_INCREMENT),
@@ -189,6 +192,38 @@ describe("GameProgression", () => {
     expect(rabbit.getMovementSpeed(240)).toBe(312);
     expect(snail.getResourceRespawnDelay(3000)).toBe(2100);
     expect(crab.getCompanionLevel("crab")).toBe(2);
+    expect(squirrel.getBaseResourceCapacity(6)).toBe(10);
+  });
+
+  it("increases the base resource capacity by two per squirrel level", () => {
+    const progression = new GameProgression(() => 0.99);
+    collect(
+      progression,
+      SUMMON_COST +
+        (SUMMON_COST + SUMMON_COST_INCREMENT) +
+        (SUMMON_COST + 2 * SUMMON_COST_INCREMENT),
+    );
+
+    expect(progression.summon()).toMatchObject({
+      kind: "success",
+      companion: { id: "squirrel" },
+      level: 1,
+    });
+    expect(progression.getBaseResourceCapacity(6)).toBe(8);
+
+    expect(progression.summon()).toMatchObject({
+      kind: "success",
+      companion: { id: "squirrel" },
+      level: 2,
+    });
+    expect(progression.getBaseResourceCapacity(6)).toBe(10);
+
+    expect(progression.summon()).toMatchObject({
+      kind: "success",
+      companion: { id: "squirrel" },
+      level: 3,
+    });
+    expect(progression.getBaseResourceCapacity(6)).toBe(12);
   });
 
   it("publishes progression snapshots and supports unsubscribing", () => {

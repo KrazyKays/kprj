@@ -36,6 +36,7 @@ export class StartupScene extends Phaser.Scene {
   private destination: Phaser.Math.Vector2 | null = null;
   private destinationMarker!: Phaser.GameObjects.Arc;
   private resources: Phaser.GameObjects.Arc[] = [];
+  private observedResourceCapacity = RESOURCE_LOCATIONS.length;
   private specialTokens: Phaser.GameObjects.Star[] = [];
   private pendingSpecialTokenSpawns = 0;
 
@@ -121,6 +122,7 @@ export class StartupScene extends Phaser.Scene {
       .setPosition(this.player.x, this.player.y)
       .setRadius(collectionZoneRadius);
     this.collectResources(collectionZoneRadius);
+    this.ensureResourceCapacity();
     this.ensureSpecialTokens();
     this.collectSpecialTokens(collectionZoneRadius);
   }
@@ -165,7 +167,7 @@ export class StartupScene extends Phaser.Scene {
       }
 
       const pickupFeedback = this.add
-        .text(resource.x, resource.y - 20 * RENDER_SCALE, "+1 RESSOURCE", {
+        .text(resource.x, resource.y - 20 * RENDER_SCALE, "+1 PÉPITE", {
           fontFamily: "Impact, Arial, sans-serif",
           fontSize: `${16 * RENDER_SCALE}px`,
           fontStyle: "bold",
@@ -189,11 +191,8 @@ export class StartupScene extends Phaser.Scene {
       resource.destroy();
       this.progression.collectResource();
       this.tutorial.onResourceCollected();
-      this.time.delayedCall(
+      this.scheduleResourceSpawn(
         this.progression.getResourceRespawnDelay(RESOURCE_RESPAWN_DELAY),
-        this.respawnResource,
-        [],
-        this,
       );
       return false;
     });
@@ -203,6 +202,18 @@ export class StartupScene extends Phaser.Scene {
     return this.progression.getCollectionDistance(
       PLAYER_RADIUS + RESOURCE_RADIUS,
     ) - RESOURCE_RADIUS;
+  }
+
+  private ensureResourceCapacity(): void {
+    const capacity = this.progression.getBaseResourceCapacity(
+      RESOURCE_LOCATIONS.length,
+    );
+    const additionalCapacity = capacity - this.observedResourceCapacity;
+    this.observedResourceCapacity = capacity;
+
+    for (let i = 0; i < additionalCapacity; i += 1) {
+      this.scheduleResourceSpawn(0);
+    }
   }
 
   private ensureSpecialTokens(): void {
@@ -242,11 +253,8 @@ export class StartupScene extends Phaser.Scene {
         resource.destroy();
         this.progression.collectResource();
         this.tutorial.onResourceCollected();
-        this.time.delayedCall(
+        this.scheduleResourceSpawn(
           this.progression.getResourceRespawnDelay(RESOURCE_RESPAWN_DELAY),
-          this.respawnResource,
-          [],
-          this,
         );
         return false;
       });
@@ -255,7 +263,7 @@ export class StartupScene extends Phaser.Scene {
         .text(
           token.x,
           token.y - 20 * RENDER_SCALE,
-          `+${absorbedResources.length} RESSOURCE${absorbedResources.length === 1 ? "" : "S"} ASPIRÉE${absorbedResources.length === 1 ? "" : "S"}`,
+          `+${absorbedResources.length} PÉPITE${absorbedResources.length === 1 ? "" : "S"} ASPIRÉE${absorbedResources.length === 1 ? "" : "S"}`,
           {
             fontFamily: "Impact, Arial, sans-serif",
             fontSize: `${16 * RENDER_SCALE}px`,
@@ -316,10 +324,26 @@ export class StartupScene extends Phaser.Scene {
     );
   }
 
-  private respawnResource(): void {
+  private scheduleResourceSpawn(delay: number): void {
+    this.time.delayedCall(delay, this.spawnPendingResource, [], this);
+  }
+
+  private spawnPendingResource(): void {
+    const capacity = this.progression.getBaseResourceCapacity(
+      RESOURCE_LOCATIONS.length,
+    );
+    if (this.resources.length >= capacity) {
+      return;
+    }
+
     const position = this.findAvailableResourcePosition();
     if (!position) {
-      this.time.delayedCall(RESOURCE_RESPAWN_RETRY_DELAY, this.respawnResource, [], this);
+      this.time.delayedCall(
+        RESOURCE_RESPAWN_RETRY_DELAY,
+        this.spawnPendingResource,
+        [],
+        this,
+      );
       return;
     }
 

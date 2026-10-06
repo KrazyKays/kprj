@@ -8,10 +8,10 @@ Cliquez ou touchez un point de l’arène pour y déplacer le joueur. Cliquez ou
 touchez une autre position pendant son déplacement pour changer sa destination.
 Les clics et touchers en dehors de l’arène sont ignorés.
 
-Le joueur ramasse les ressources dorées dès que leur bord touche le cercle rouge
-autour de lui. Le rayon du cercle et le rayon de la ressource sont pris en compte
-ensemble, comme deux cercles qui se touchent. Le compteur dans le panneau
-augmente à chaque ressource collectée. Une ressource réapparaît après trois
+Le joueur ramasse les pépites dès que leur bord touche le cercle rouge autour
+de lui. Le rayon du cercle et le rayon de la pépite sont pris en compte ensemble,
+comme deux cercles qui se touchent. Le compteur dans le panneau augmente à
+chaque pépite collectée. Une pépite réapparaît après trois
 secondes à un emplacement libre de l’arène.
 
 Un tutoriel discret guide la première partie : déplacement, collecte puis
@@ -19,20 +19,22 @@ invocation. Il avance après chaque première action et peut être masqué ; il
 réapparaît au rechargement avec la nouvelle partie.
 
 La zone de collecte est matérialisée par un halo autour du joueur et s’élargit
-avec le bonus du Moustique doré. Les ressources servent à invoquer un compagnon
-passif : le coût commence à 5 ressources et augmente de 1 après chaque
+avec le bonus du Moustique magnétique. Les pépites servent à invoquer un compagnon
+passif : le coût commence à 5 pépites et augmente de 1 après chaque
 invocation réussie. Le bouton d’invocation indique combien de tirages peuvent
 être financés et permet de les effectuer en une fois, tout en conservant le
 choix d’invoquer un seul compagnon. Les doublons augmentent le niveau du
 compagnon jusqu’au niveau 3 ; les
 compagnons déjà au niveau maximal ne sont plus inclus dans les tirages, qui ont
-des chances égales parmi les compagnons encore améliorables. Les quatre
+des chances égales parmi les compagnons encore améliorables. Les cinq
 compagnons améliorent respectivement le rayon de collecte (+25 % par niveau),
-la vitesse du joueur (+15 % par niveau), le délai de réapparition des
-ressources (-15 % par niveau), et l’apparition de jetons aspirants (un par
-niveau) grâce au Crabe magnétique. Ces jetons violets absorbent jusqu’aux trois
-ressources dorées les plus proches, qui sont créditées au compteur ; ils
-réapparaissent après six secondes. Le panneau détaille le bonus de chaque
+la vitesse du joueur (+15 % par niveau), le délai de réapparition des pépites
+(-15 % par niveau) grâce au Singe productif, l’apparition de jetons aspirants
+(un par niveau) grâce au Crabe trou noir, et la capacité maximale de pépites de
+base à l’écran (+2, +4 puis +6) grâce à l’Écureuil prévoyant.
+Les jetons violets absorbent jusqu’aux trois pépites les plus proches,
+qui sont créditées au compteur, puis réapparaissent après six secondes. Le
+panneau détaille le bonus de chaque
 niveau et met en évidence les niveaux débloqués et le prochain ; les détails
 peuvent être dépliés pour garder le panneau compact. Le bouton d’invocation
 groupée indique directement le nombre de tirages possibles et leur coût total ;

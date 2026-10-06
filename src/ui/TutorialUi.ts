@@ -10,13 +10,13 @@ const TUTORIAL_STEPS = {
     number: 2,
     title: "COLLECTE",
     message:
-      "Approchez un jeton doré : il est ramassé dès que son bord touche le cercle rouge.",
+      "Approchez une pépite : elle est ramassée dès que son bord touche le cercle rouge.",
   },
   summon: {
     number: 3,
     title: "INVOCATION",
     message:
-      "Ramassez des ressources jusqu’au coût affiché, puis invoquez un compagnon seul ou en groupe.",
+      "Ramassez des pépites jusqu’au coût affiché, puis invoquez un compagnon seul ou en groupe.",
   },
 } as const;
 

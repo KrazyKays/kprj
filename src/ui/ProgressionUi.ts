@@ -95,12 +95,12 @@ export function bindProgressionUi(
     summonButton.disabled = allMaxed || snapshot.resources < snapshot.summonCost;
     summonButton.textContent = allMaxed
       ? "Tous les compagnons sont au niveau max"
-      : `Invoquer 1 fois · ${snapshot.summonCost} ressources`;
+      : `Invoquer 1 fois · ${snapshot.summonCost} pépites`;
     summonAllButton.disabled = allMaxed || snapshot.affordableSummons === 0;
     summonAllButton.textContent = allMaxed
       ? "Tous les compagnons sont au niveau max"
       : snapshot.affordableSummons > 0
-        ? `Invoquer tout · ${snapshot.affordableSummons} fois · ${snapshot.affordableSummonCost} ressources`
+        ? `Invoquer tout · ${snapshot.affordableSummons} fois · ${snapshot.affordableSummonCost} pépites`
         : "Invoquer tout";
     summonAllButton.classList.toggle(
       "is-multi-summon",
@@ -108,7 +108,7 @@ export function bindProgressionUi(
     );
     summonPreview.textContent =
       !allMaxed && snapshot.affordableSummons === 0
-        ? `Prochaine invocation : ${snapshot.summonCost} ressources.`
+        ? `Prochaine invocation : ${snapshot.summonCost} pépites.`
         : "";
 
     if (
@@ -137,7 +137,7 @@ export function bindProgressionUi(
         tutorial.onCompanionSummoned();
         break;
       case "insufficient-resources":
-        summonResult.textContent = `Il faut ${progression.getSummonCost()} ressources pour invoquer.`;
+        summonResult.textContent = `Il faut ${progression.getSummonCost()} pépites pour invoquer.`;
         break;
       case "all-maxed":
         summonResult.textContent = "Tous les compagnons ont atteint leur niveau maximal.";
@@ -154,7 +154,7 @@ export function bindProgressionUi(
         tutorial.onCompanionSummoned();
         break;
       case "insufficient-resources":
-        summonResult.textContent = `Il faut ${progression.getSummonCost()} ressources pour invoquer.`;
+        summonResult.textContent = `Il faut ${progression.getSummonCost()} pépites pour invoquer.`;
         break;
       case "all-maxed":
         summonResult.textContent = "Tous les compagnons ont atteint leur niveau maximal.";

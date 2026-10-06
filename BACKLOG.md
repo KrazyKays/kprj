@@ -25,8 +25,8 @@ mécaniques ou demandent des choix de conception.
    l’action correspondante, le tutoriel peut être masqué et ne couvre pas les
    futures ressources ou actions, qui pourront ajouter leurs propres indications.
 4. **Compagnons créant des ressources à effet actif** — Implémenté avec le
-   Crabe magnétique : il fait apparaître un jeton aspirant par niveau (jusqu’à
-   trois). Récupérer un jeton absorbe les trois ressources dorées les plus
+   Crabe trou noir : il fait apparaître un jeton aspirant par niveau (jusqu’à
+   trois). Récupérer un jeton absorbe les trois pépites les plus
    proches, même à distance, crédite celles qui sont disponibles et fait
    réapparaître le jeton après six secondes.
 5. **Ressources alternatives pour d’autres actions** — l’obtention d’un

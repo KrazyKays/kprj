@@ -6,7 +6,7 @@ export const MAX_RECENT_ACTIONS = 5;
 export const COMPANIONS = [
   {
     id: "mosquito",
-    name: "Moustique doré",
+    name: "Moustique magnétique",
     passive: "+25 % au rayon de collecte par niveau.",
     bonusByLevel: [
       "+25 % au rayon de collecte",
@@ -26,7 +26,7 @@ export const COMPANIONS = [
   },
   {
     id: "snail",
-    name: "Escargot chanceux",
+    name: "Singe productif",
     passive: "Réduit de 15 % le délai de réapparition par niveau.",
     bonusByLevel: [
       "−15 % au délai de réapparition",
@@ -36,13 +36,23 @@ export const COMPANIONS = [
   },
   {
     id: "crab",
-    name: "Crabe magnétique",
+    name: "Crabe trou noir",
     passive:
-      "Fait apparaître un jeton aspirant par niveau ; chaque jeton absorbe les trois ressources dorées les plus proches.",
+      "Fait apparaître un jeton aspirant par niveau ; chaque jeton absorbe les trois pépites les plus proches.",
     bonusByLevel: [
       "1 jeton aspirant actif",
       "2 jetons aspirants actifs",
       "3 jetons aspirants actifs",
+    ],
+  },
+  {
+    id: "squirrel",
+    name: "Écureuil prévoyant",
+    passive: "Augmente le nombre maximal de pépites de base dans l’arène.",
+    bonusByLevel: [
+      "+2 pépites de base au maximum à l’écran",
+      "+4 pépites de base au maximum à l’écran",
+      "+6 pépites de base au maximum à l’écran",
     ],
   },
 ] as const;
@@ -84,6 +94,7 @@ export class GameProgression {
     rabbit: 0,
     snail: 0,
     crab: 0,
+    squirrel: 0,
   };
   private readonly recentActions: string[] = [];
   private readonly listeners = new Set<ProgressionListener>();
@@ -183,6 +194,10 @@ export class GameProgression {
 
   getResourceRespawnDelay(baseDelay: number): number {
     return Math.max(500, baseDelay * (1 - this.companionLevels.snail * 0.15));
+  }
+
+  getBaseResourceCapacity(baseCapacity: number): number {
+    return baseCapacity + this.companionLevels.squirrel * 2;
   }
 
   getCompanionLevel(id: CompanionId): number {
