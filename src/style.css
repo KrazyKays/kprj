@@ -146,6 +146,10 @@ canvas {
   gap: 0.875rem;
 }
 
+.history-panel {
+  min-width: 0;
+}
+
 .panel-card {
   position: relative;
   padding: 1rem;
@@ -385,6 +389,42 @@ canvas {
   }
 
   .game-panel {
+    grid-column: 2;
+    grid-row: 1;
     align-content: center;
+  }
+
+  .history-panel {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
+
+@media (min-width: 1200px) {
+  .game-layout {
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(260px, 300px)
+      minmax(220px, 280px);
+    gap: clamp(1.5rem, 2vw, 2rem);
+    width: min(100%, 1560px);
+    align-content: center;
+  }
+
+  .arena-column {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .game-panel {
+    grid-column: 2;
+    grid-row: 1;
+    align-content: start;
+  }
+
+  .history-panel {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: start;
   }
 }
