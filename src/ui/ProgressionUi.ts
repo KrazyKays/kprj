@@ -3,9 +3,13 @@ import {
   GameProgression,
   MAX_COMPANION_LEVEL,
 } from "../game/progression";
+import type { TutorialGuide } from "../game/tutorial";
 import type { CompanionId, ProgressionSnapshot } from "../game/progression";
 
-export function bindProgressionUi(progression: GameProgression): () => void {
+export function bindProgressionUi(
+  progression: GameProgression,
+  tutorial: TutorialGuide,
+): () => void {
   const resourceCount = document.getElementById("resource-count");
   const summonButton = document.getElementById("summon-button");
   const summonAllButton = document.getElementById("summon-all-button");
@@ -130,6 +134,7 @@ export function bindProgressionUi(progression: GameProgression): () => void {
     switch (result.kind) {
       case "success":
         summonResult.textContent = "";
+        tutorial.onCompanionSummoned();
         break;
       case "insufficient-resources":
         summonResult.textContent = `Il faut ${progression.getSummonCost()} ressources pour invoquer.`;
@@ -146,6 +151,7 @@ export function bindProgressionUi(progression: GameProgression): () => void {
     switch (result.kind) {
       case "success":
         summonResult.textContent = "";
+        tutorial.onCompanionSummoned();
         break;
       case "insufficient-resources":
         summonResult.textContent = `Il faut ${progression.getSummonCost()} ressources pour invoquer.`;

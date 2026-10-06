@@ -14,6 +14,10 @@ ensemble, comme deux cercles qui se touchent. Le compteur dans le panneau
 augmente à chaque ressource collectée. Une ressource réapparaît après trois
 secondes à un emplacement libre de l’arène.
 
+Un tutoriel discret guide la première partie : déplacement, collecte puis
+invocation. Il avance après chaque première action et peut être masqué ; il
+réapparaît au rechargement avec la nouvelle partie.
+
 La zone de collecte est matérialisée par un halo autour du joueur et s’élargit
 avec le bonus du Moustique doré. Les ressources servent à invoquer un compagnon
 passif : le coût commence à 5 ressources et augmente de 1 après chaque

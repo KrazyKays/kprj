@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { isResourceTouchingCollectionZone } from "../collection";
 import type { GameProgression } from "../progression";
 import { RENDER_SCALE } from "../renderScale";
+import type { TutorialGuide } from "../tutorial";
 
 const ARENA = {
   left: 24 * RENDER_SCALE,
@@ -31,7 +32,10 @@ export class StartupScene extends Phaser.Scene {
   private destinationMarker!: Phaser.GameObjects.Arc;
   private resources: Phaser.GameObjects.Arc[] = [];
 
-  constructor(private readonly progression: GameProgression) {
+  constructor(
+    private readonly progression: GameProgression,
+    private readonly tutorial: TutorialGuide,
+  ) {
     super("startup");
   }
 
@@ -135,6 +139,7 @@ export class StartupScene extends Phaser.Scene {
 
     this.destination = new Phaser.Math.Vector2(destinationX, destinationY);
     this.destinationMarker.setPosition(destinationX, destinationY).setVisible(true);
+    this.tutorial.onMoveCommand();
   }
 
   private collectResources(collectionZoneRadius: number): void {
@@ -174,6 +179,7 @@ export class StartupScene extends Phaser.Scene {
 
       resource.destroy();
       this.progression.collectResource();
+      this.tutorial.onResourceCollected();
       this.time.delayedCall(
         this.progression.getResourceRespawnDelay(RESOURCE_RESPAWN_DELAY),
         this.respawnResource,

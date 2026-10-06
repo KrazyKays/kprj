@@ -20,10 +20,10 @@ mécaniques ou demandent des choix de conception.
    panneau de recrutement. Garder l’affichage lisible à côté de la future
    distinction entre ressources ordinaires, ressources à effet immédiat et
    monnaies alternatives.
-3. **Tutoriel intégré léger** — guider progressivement le joueur sur le
-   déplacement, la collecte et la première invocation, sans écran de règles
-   bloquant. Le tutoriel doit rester discret et tenir compte des futures
-   ressources et actions pour éviter de surcharger l’interface.
+3. **Tutoriel intégré léger** — Implémenté : indications non bloquantes sur le
+   déplacement, la première collecte et l’invocation. Chaque étape avance après
+   l’action correspondante, le tutoriel peut être masqué et ne couvre pas les
+   futures ressources ou actions, qui pourront ajouter leurs propres indications.
 4. **Compagnons créant des ressources à effet actif** — certains compagnons
    font apparaître des ressources spéciales ; leur quantité dépend du niveau du
    compagnon (1, 2 ou 3 aux niveaux correspondants). Leur récupération déclenche

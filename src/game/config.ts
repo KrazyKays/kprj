@@ -1,12 +1,14 @@
 import Phaser from "phaser";
 import { RENDER_SCALE } from "./renderScale";
 import type { GameProgression } from "./progression";
+import type { TutorialGuide } from "./tutorial";
 import { StartupScene } from "./scenes/StartupScene";
 
 const GAME_SIZE = 640;
 
 export function createGameConfig(
   progression: GameProgression,
+  tutorial: TutorialGuide,
 ): Phaser.Types.Core.GameConfig {
   return {
     type: Phaser.AUTO,
@@ -22,6 +24,6 @@ export function createGameConfig(
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
     },
-    scene: [new StartupScene(progression)],
+    scene: [new StartupScene(progression, tutorial)],
   };
 }

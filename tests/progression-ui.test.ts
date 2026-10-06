@@ -6,6 +6,7 @@ import {
   SUMMON_COST,
   SUMMON_COST_INCREMENT,
 } from "../src/game/progression";
+import { TutorialGuide } from "../src/game/tutorial";
 import { bindProgressionUi } from "../src/ui/ProgressionUi";
 
 let unsubscribe: (() => void) | undefined;
@@ -21,7 +22,7 @@ function mountUi(progression: GameProgression): () => void {
     <ol id="action-history" role="log"></ol>
   `;
 
-  unsubscribe = bindProgressionUi(progression);
+  unsubscribe = bindProgressionUi(progression, new TutorialGuide());
   return unsubscribe;
 }
 
