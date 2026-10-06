@@ -34,7 +34,7 @@ body {
   min-height: 100svh;
   margin-inline: auto;
   padding: clamp(1rem, 4vw, 2.5rem);
-  align-content: center;
+  align-content: start;
 }
 
 .arena-column {
@@ -155,9 +155,14 @@ canvas {
   line-height: 1.5;
 }
 
+.summon-actions {
+  display: grid;
+  gap: 0.625rem;
+  margin-top: 0.875rem;
+}
+
 .summon-button {
   width: 100%;
-  margin-top: 0.875rem;
   padding: 0.75rem 1rem;
   border: 2px solid #191815;
   background: #c93324;
@@ -170,8 +175,17 @@ canvas {
   cursor: pointer;
 }
 
+.summon-all-button {
+  border-color: #191815;
+  background: #655b4d;
+}
+
 .summon-button:not(:disabled):hover {
   background: #a9251b;
+}
+
+.summon-all-button:not(:disabled):hover {
+  background: #4a4339;
 }
 
 .summon-button:not(:disabled):active {
@@ -204,16 +218,14 @@ canvas {
 
 .companion-list {
   display: grid;
-  gap: 0.625rem;
+  gap: 0.375rem;
   margin: 0.75rem 0 0;
   padding: 0;
   list-style: none;
 }
 
 .companion-entry {
-  display: grid;
-  gap: 0.2rem;
-  padding: 0.625rem 0.5rem;
+  padding: 0.4rem 0.5rem;
   border-bottom: 1px dashed #8f8573;
   background: repeating-linear-gradient(
     135deg,
@@ -224,9 +236,27 @@ canvas {
   );
 }
 
+.companion-entry summary {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.companion-entry summary strong {
+  font-size: 0.9rem;
+}
+
+.companion-entry summary::marker {
+  color: #c93324;
+}
+
 .companion-entry span {
+  display: block;
+  margin-top: 0.4rem;
   color: #5e5548;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   line-height: 1.4;
 }
 
@@ -239,7 +269,7 @@ canvas {
 .companion-bonus-levels {
   display: grid;
   gap: 0.2rem;
-  margin: 0.25rem 0 0;
+  margin: 0.35rem 0 0;
   padding: 0;
   color: #655b4d;
   font-size: 0.75rem;
@@ -258,6 +288,29 @@ canvas {
 
 .companion-bonus-levels .is-next {
   color: #a9251b;
+}
+
+.companion-hint {
+  margin: 0.5rem 0 0;
+  color: #655b4d;
+  font-size: 0.75rem;
+}
+
+.action-history {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0;
+  padding-left: 1.25rem;
+  color: #353026;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.action-history:empty::before {
+  color: #655b4d;
+  content: "Aucune action pour le moment.";
+  list-style: none;
+  margin-left: -1.25rem;
 }
 
 @media (min-width: 760px) {

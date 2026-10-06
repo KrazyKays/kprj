@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   GameProgression,
+  MAX_RECENT_ACTIONS,
   MAX_COMPANION_LEVEL,
   SUMMON_COST,
   SUMMON_COST_INCREMENT,
@@ -92,6 +93,25 @@ describe("GameProgression", () => {
       companions: { mosquito: 2 },
     });
     expect(snapshots).toEqual([12, 1]);
+  });
+
+  it("keeps only the five most recent collection and summon actions", () => {
+    const progression = new GameProgression(() => 0);
+    collect(progression, 11);
+    progression.summon();
+    progression.summon();
+
+    const { recentActions } = progression.getSnapshot();
+    expect(recentActions).toHaveLength(MAX_RECENT_ACTIONS);
+    expect(recentActions.slice(0, 2)).toEqual([
+      "Moustique doré invoqué · niveau 2.",
+      "Moustique doré invoqué · niveau 1.",
+    ]);
+    expect(recentActions.slice(2)).toEqual([
+      "Ressource ordinaire récupérée (+1).",
+      "Ressource ordinaire récupérée (+1).",
+      "Ressource ordinaire récupérée (+1).",
+    ]);
   });
 
   it("limits batch summons to remaining companion levels", () => {

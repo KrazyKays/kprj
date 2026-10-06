@@ -11,10 +11,10 @@ Les priorités ci-dessous privilégient d’abord les améliorations compatibles
 avec la progression actuelle, puis les fonctionnalités qui élargissent les
 mécaniques ou demandent des choix de conception.
 
-1. **Invoquer le maximum de compagnons possible** — Implémenté. Le bouton
-   indique combien d’invocations sont finançables et dépense les ressources
-   disponibles au coût croissant à chaque invocation, dans la limite des
-   compagnons encore améliorables.
+1. **Invocation individuelle ou groupée** — Implémenté. Le joueur peut
+   invoquer un seul compagnon ou dépenser les ressources disponibles au coût
+   croissant pour effectuer autant d’invocations que possible, dans la limite
+   des compagnons encore améliorables.
 2. **Aperçu des compagnons et de leurs bonus** — Implémenté. Les bonus de
    chaque niveau, le niveau actuel et le prochain niveau sont visibles dans le
    panneau de recrutement. Garder l’affichage lisible à côté de la future
@@ -37,9 +37,10 @@ mécaniques ou demandent des choix de conception.
    avec les ressources spéciales déclenchant un effet immédiat pour distinguer
    clairement ces effets des monnaies dépensables.
 6. **Historique visuel des actions** — afficher les événements récents (par
-   exemple collecte, invocation et utilisation d’une action). Commencer par un
-   historique éphémère, sans sauvegarde entre les parties ; décider du nombre
-   d’événements visibles et de leur durée d’affichage lors de la conception UI.
+   exemple collecte, invocation et utilisation d’une action) dans un encart
+   distinct. Implémenté pour les collectes et invocations, avec un historique
+   éphémère des cinq dernières actions ; intégrer les futures actions lorsqu’elles
+   seront ajoutées.
 7. **Arènes alternatives avec obstacles ou murs** — permettre de choisir entre
    plusieurs configurations d’arène. Définir les règles de collision, les
    déplacements et l’emplacement des ressources autour des obstacles ; cette

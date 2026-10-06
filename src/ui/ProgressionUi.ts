@@ -8,16 +8,20 @@ import type { CompanionId, ProgressionSnapshot } from "../game/progression";
 export function bindProgressionUi(progression: GameProgression): () => void {
   const resourceCount = document.getElementById("resource-count");
   const summonButton = document.getElementById("summon-button");
+  const summonAllButton = document.getElementById("summon-all-button");
   const summonPreview = document.getElementById("summon-preview");
   const summonResult = document.getElementById("summon-result");
   const companionList = document.getElementById("companion-list");
+  const actionHistory = document.getElementById("action-history");
 
   if (
     !(resourceCount instanceof HTMLOutputElement) ||
     !(summonButton instanceof HTMLButtonElement) ||
+    !(summonAllButton instanceof HTMLButtonElement) ||
     !(summonPreview instanceof HTMLElement) ||
     !(summonResult instanceof HTMLElement) ||
-    !(companionList instanceof HTMLElement)
+    !(companionList instanceof HTMLElement) ||
+    !(actionHistory instanceof HTMLOListElement)
   ) {
     throw new Error("L’interface de progression est incomplète.");
   }
@@ -27,18 +31,20 @@ export function bindProgressionUi(progression: GameProgression): () => void {
     { level: HTMLOutputElement; bonuses: HTMLLIElement[] }
   >();
   for (const companion of COMPANIONS) {
-    const item = document.createElement("li");
+    const item = document.createElement("details");
     item.className = "companion-entry";
 
+    const summary = document.createElement("summary");
     const name = document.createElement("strong");
     name.textContent = companion.name;
-
-    const passive = document.createElement("span");
-    passive.textContent = companion.passive;
 
     const level = document.createElement("output");
     level.className = "companion-level";
     level.setAttribute("aria-label", `Niveau de ${companion.name}`);
+    summary.append(name, level);
+
+    const passive = document.createElement("span");
+    passive.textContent = companion.passive;
 
     const bonusLevels = document.createElement("ol");
     bonusLevels.className = "companion-bonus-levels";
@@ -50,7 +56,7 @@ export function bindProgressionUi(progression: GameProgression): () => void {
     });
     companionEntries.set(companion.id, { level, bonuses });
 
-    item.append(name, passive, level, bonusLevels);
+    item.append(summary, passive, bonusLevels);
     companionList.append(item);
   }
 
@@ -80,30 +86,54 @@ export function bindProgressionUi(progression: GameProgression): () => void {
       }
     }
 
-    summonButton.disabled = snapshot.affordableSummons === 0;
-    summonButton.textContent = allMaxed
+    summonButton.disabled = allMaxed || snapshot.resources < snapshot.summonCost;
+    summonButton.textContent = `Invoquer 1 fois · ${snapshot.summonCost} ressources`;
+    summonAllButton.disabled = allMaxed || snapshot.affordableSummons === 0;
+    summonAllButton.textContent = allMaxed
       ? "Tous les compagnons sont au niveau max"
       : snapshot.affordableSummons > 0
         ? `Invoquer tout · ${snapshot.affordableSummons} fois`
-        : `Invoquer · ${snapshot.summonCost} ressources`;
+        : "Invoquer tout";
     summonPreview.textContent = allMaxed
       ? "Tous les bonus ont été débloqués."
       : snapshot.affordableSummons > 0
         ? `Coût total : ${snapshot.affordableSummonCost} ressources.`
         : `Prochaine invocation : ${snapshot.summonCost} ressources.`;
+
+    actionHistory.replaceChildren(
+      ...snapshot.recentActions.map((action) => {
+        const item = document.createElement("li");
+        item.textContent = action;
+        return item;
+      }),
+    );
   };
 
   const unsubscribe = progression.subscribe(render);
   const summon = (): void => {
+    const result = progression.summon();
+
+    switch (result.kind) {
+      case "success":
+        summonResult.textContent = `${result.companion.name} passe au niveau ${result.level}.`;
+        break;
+      case "insufficient-resources":
+        summonResult.textContent = `Il faut ${progression.getSummonCost()} ressources pour invoquer.`;
+        break;
+      case "all-maxed":
+        summonResult.textContent = "Tous les compagnons ont atteint leur niveau maximal.";
+        break;
+    }
+  };
+
+  const summonAll = (): void => {
     const result = progression.summonAll();
 
     switch (result.kind) {
       case "success":
         summonResult.textContent = `${result.summons.length} invocation${
           result.summons.length === 1 ? "" : "s"
-        } : ${result.summons
-          .map(({ companion, level }) => `${companion.name} niv. ${level}`)
-          .join(" · ")}.`;
+        } effectuée${result.summons.length === 1 ? "" : "s"}.`;
         break;
       case "insufficient-resources":
         summonResult.textContent = `Il faut ${progression.getSummonCost()} ressources pour invoquer.`;
@@ -115,8 +145,10 @@ export function bindProgressionUi(progression: GameProgression): () => void {
   };
 
   summonButton.addEventListener("click", summon);
+  summonAllButton.addEventListener("click", summonAll);
   return () => {
     unsubscribe();
     summonButton.removeEventListener("click", summon);
+    summonAllButton.removeEventListener("click", summonAll);
   };
 }

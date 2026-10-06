@@ -1,6 +1,7 @@
 export const SUMMON_COST = 5;
 export const SUMMON_COST_INCREMENT = 1;
 export const MAX_COMPANION_LEVEL = 3;
+export const MAX_RECENT_ACTIONS = 5;
 
 export const COMPANIONS = [
   {
@@ -43,6 +44,7 @@ export interface ProgressionSnapshot {
   affordableSummons: number;
   affordableSummonCost: number;
   companions: Readonly<Record<CompanionId, number>>;
+  recentActions: readonly string[];
 }
 
 export type SummonResult =
@@ -71,6 +73,7 @@ export class GameProgression {
     rabbit: 0,
     snail: 0,
   };
+  private readonly recentActions: string[] = [];
   private readonly listeners = new Set<ProgressionListener>();
 
   constructor(private readonly random: () => number = Math.random) {}
@@ -83,6 +86,7 @@ export class GameProgression {
       affordableSummons: affordableSummons.count,
       affordableSummonCost: affordableSummons.cost,
       companions: { ...this.companionLevels },
+      recentActions: [...this.recentActions],
     };
   }
 
@@ -123,12 +127,14 @@ export class GameProgression {
 
   collectResource(): void {
     this.resources += 1;
+    this.recordAction("Ressource ordinaire récupérée (+1).");
     this.notify();
   }
 
   summon(): SummonResult {
     const result = this.summonOne();
     if (result.kind === "success") {
+      this.recordSummonAction(result.companion, result.level);
       this.notify();
     }
     return result;
@@ -145,6 +151,7 @@ export class GameProgression {
     let result = this.summonOne();
     while (result.kind === "success") {
       summons.push({ companion: result.companion, level: result.level });
+      this.recordSummonAction(result.companion, result.level);
       if (this.getAffordableSummonCount() === 0) {
         break;
       }
@@ -170,6 +177,21 @@ export class GameProgression {
   private hasAvailableCompanions(): boolean {
     return COMPANIONS.some(
       ({ id }) => this.companionLevels[id] < MAX_COMPANION_LEVEL,
+    );
+  }
+
+  private recordSummonAction(
+    companion: (typeof COMPANIONS)[number],
+    level: number,
+  ): void {
+    this.recordAction(`${companion.name} invoqué · niveau ${level}.`);
+  }
+
+  private recordAction(action: string): void {
+    this.recentActions.unshift(action);
+    this.recentActions.length = Math.min(
+      this.recentActions.length,
+      MAX_RECENT_ACTIONS,
     );
   }
 
