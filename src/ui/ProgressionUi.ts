@@ -17,6 +17,7 @@ export function bindProgressionUi(
   const summonAllButton = document.getElementById("summon-all-button");
   const summonPreview = document.getElementById("summon-preview");
   const summonResult = document.getElementById("summon-result");
+  const companionChances = document.getElementById("companion-chances");
   const companionList = document.getElementById("companion-list");
   const actionHistory = document.getElementById("action-history");
 
@@ -27,6 +28,7 @@ export function bindProgressionUi(
     !(summonAllButton instanceof HTMLButtonElement) ||
     !(summonPreview instanceof HTMLElement) ||
     !(summonResult instanceof HTMLElement) ||
+    !(companionChances instanceof HTMLUListElement) ||
     !(companionList instanceof HTMLElement) ||
     !(actionHistory instanceof HTMLOListElement)
   ) {
@@ -64,7 +66,6 @@ export function bindProgressionUi(
     const level = document.createElement("output");
     level.className = "companion-level";
     level.setAttribute("aria-label", `Niveau de ${companion.name}`);
-    summary.append(name, level);
 
     const passive = document.createElement("span");
     passive.textContent = companion.passive;
@@ -113,13 +114,12 @@ export function bindProgressionUi(
             ? `Niv. ${level} · Max`
             : `Niv. ${level}`;
       const chance = snapshot.companionChances[companion.id];
-      const formattedChance = new Intl.NumberFormat("fr-FR", {
-        maximumFractionDigits: 1,
-      }).format(chance);
       entry.rarity.textContent =
-        chance > 0
-          ? `${entry.rarityName} · ${formattedChance} % de chance actuelle`
-          : `${entry.rarityName} · Niveau max`;
+        entry.rarityName;
+      entry.rarity.setAttribute(
+        "aria-label",
+        chance > 0 ? entry.rarityName : `${entry.rarityName}, niveau max`,
+      );
       entry.bonuses.forEach((bonus, index) => {
         bonus.classList.toggle("is-unlocked", index < level);
         bonus.classList.toggle("is-next", index === level);
@@ -128,6 +128,21 @@ export function bindProgressionUi(
         allMaxed = false;
       }
     }
+
+    companionChances.replaceChildren(
+      ...COMPANIONS.map((companion) => {
+        const item = document.createElement("li");
+        const chance = snapshot.companionChances[companion.id];
+        const formattedChance = new Intl.NumberFormat("fr-FR", {
+          maximumFractionDigits: 1,
+        }).format(chance);
+        item.textContent =
+          chance > 0
+            ? `${companion.name} · ${formattedChance} %`
+            : `${companion.name} · Niveau max`;
+        return item;
+      }),
+    );
 
     summonButton.disabled = allMaxed || snapshot.resources < snapshot.summonCost;
     summonButton.textContent = allMaxed

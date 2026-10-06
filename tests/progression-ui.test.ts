@@ -21,6 +21,10 @@ function mountUi(progression: GameProgression): () => void {
     <button id="summon-all-button" type="button"></button>
     <p id="summon-preview"></p>
     <p id="summon-result"></p>
+    <details class="summon-chance-help">
+      <summary>?</summary>
+      <ul id="companion-chances"></ul>
+    </details>
     <ul id="companion-list"></ul>
     <ol id="action-history" role="log"></ol>
   `;
@@ -38,7 +42,7 @@ afterEach(() => {
 
 describe("progression UI", () => {
   it("shows the renamed companions and their bonuses", () => {
-    const progression = new GameProgression(() => 0.91);
+    const progression = new GameProgression(() => 0.99);
     mountUi(progression);
 
     expect(document.getElementById("companion-list")?.textContent).toContain(
@@ -54,16 +58,20 @@ describe("progression UI", () => {
       "+6 pépites de base au maximum à l’écran",
     );
     expect(document.getElementById("companion-list")?.textContent).toContain(
-      "Commun · 35 % de chance actuelle",
-    );
-    expect(document.getElementById("companion-list")?.textContent).toContain(
-      "Épique · 2 % de chance actuelle",
+      "Commun",
     );
     expect(
       document.querySelector(
         "#companion-list details:first-child summary",
       )?.textContent,
-    ).toContain("Commun · 35 % de chance actuelle");
+    ).not.toContain("%");
+    expect(document.querySelector(".summon-chance-help")?.hasAttribute("open")).toBe(false);
+    expect(document.getElementById("companion-chances")?.textContent).toContain(
+      "Moustique magnétique · 35,7 %",
+    );
+    expect(document.getElementById("companion-chances")?.textContent).toContain(
+      "Singe productif · 4,1 %",
+    );
 
     for (let i = 0; i < SUMMON_COST; i += 1) {
       progression.collectResource();

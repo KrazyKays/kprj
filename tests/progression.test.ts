@@ -87,11 +87,11 @@ describe("GameProgression", () => {
   it("weights summon chances by rarity and redistributes completed rarity tiers", () => {
     const progression = new GameProgression(() => 0);
     expect(progression.getSnapshot().companionChances).toEqual({
-      mosquito: 35,
-      rabbit: 35,
-      snail: 20,
-      crab: 8,
-      squirrel: 2,
+      mosquito: (70 / 98 / 2) * 100,
+      rabbit: (70 / 98 / 2) * 100,
+      snail: (8 / 98 / 2) * 100,
+      crab: (8 / 98 / 2) * 100,
+      squirrel: (20 / 98) * 100,
     });
 
     const commonSummons = MAX_COMPANION_LEVEL * 2;
@@ -116,19 +116,19 @@ describe("GameProgression", () => {
     expect(progression.getSnapshot().companionChances).toEqual({
       mosquito: 0,
       rabbit: 0,
-      snail: (20 / 30) * 100,
-      crab: (8 / 30) * 100,
-      squirrel: (2 / 30) * 100,
+      snail: (8 / 28 / 2) * 100,
+      crab: (8 / 28 / 2) * 100,
+      squirrel: (20 / 28) * 100,
     });
   });
 
   it("selects companions according to rarity probability thresholds", () => {
     const expectedCompanions = [
       [0, "mosquito"],
-      [0.35, "rabbit"],
-      [0.7, "snail"],
-      [0.9, "crab"],
-      [0.98, "squirrel"],
+      [0.36, "rabbit"],
+      [0.72, "squirrel"],
+      [0.93, "snail"],
+      [0.97, "crab"],
     ] as const;
 
     for (const [randomValue, expectedId] of expectedCompanions) {
@@ -233,9 +233,9 @@ describe("GameProgression", () => {
   it("applies each companion's passive bonus per level", () => {
     const mosquito = new GameProgression(() => 0);
     const rabbit = new GameProgression(() => 0.4);
-    const snail = new GameProgression(() => 0.75);
-    const crab = new GameProgression(() => 0.91);
-    const squirrel = new GameProgression(() => 0.99);
+    const snail = new GameProgression(() => 0.94);
+    const crab = new GameProgression(() => 0.98);
+    const squirrel = new GameProgression(() => 0.8);
 
     for (const progression of [mosquito, rabbit, snail, crab, squirrel]) {
       collect(
@@ -254,7 +254,7 @@ describe("GameProgression", () => {
   });
 
   it("increases the base resource capacity by two per squirrel level", () => {
-    const progression = new GameProgression(() => 0.99);
+    const progression = new GameProgression(() => 0.8);
     collect(
       progression,
       SUMMON_COST +

@@ -25,12 +25,14 @@ invocation réussie. Le bouton d’invocation indique combien de tirages peuvent
 être financés et permet de les effectuer en une fois, tout en conservant le
 choix d’invoquer un seul compagnon. Les doublons augmentent le niveau du
 compagnon jusqu’au niveau 3 ; les
-compagnons déjà au niveau maximal ne sont plus inclus dans les tirages. Les
-raretés affichées sont Commun, Peu commun, Rare et Épique : leurs chances de
-groupe sont respectivement de 70 %, 20 %, 8 % et 2 %, réparties également entre
-les compagnons disponibles de chaque groupe. Quand tous les compagnons d’une
-rareté sont au niveau maximal, sa part est redistribuée entre les raretés
-restantes ; la chance actuelle de chaque compagnon est visible. Les cinq
+compagnons déjà au niveau maximal ne sont plus inclus dans les tirages. Les raretés sont définies par l’efficacité des passifs pour obtenir des pépites :
+le Moustique magnétique et le Lapin rapide sont communs, l’Écureuil prévoyant
+peu commun, et le Singe productif ainsi que le Crabe trou noir rares. Les chances
+de groupe sont pondérées à 70 %, 20 % et 8 %, puis normalisées et réparties
+également entre les compagnons disponibles de chaque groupe. Quand tous les
+compagnons d’une rareté sont au niveau maximal, sa part est redistribuée entre
+les raretés restantes ; les probabilités détaillées sont consultables depuis
+l’aide « ? » du panneau de recrutement. Les cinq
 compagnons améliorent respectivement le rayon de collecte (+25 % par niveau),
 la vitesse du joueur (+15 % par niveau), le délai de réapparition des pépites
 (-15 % par niveau) grâce au Singe productif, l’apparition de jetons aspirants

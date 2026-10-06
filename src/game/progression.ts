@@ -7,7 +7,6 @@ export const COMPANION_RARITIES = [
   { id: "common", name: "Commun", weight: 70 },
   { id: "uncommon", name: "Peu commun", weight: 20 },
   { id: "rare", name: "Rare", weight: 8 },
-  { id: "epic", name: "Épique", weight: 2 },
 ] as const;
 
 export type CompanionRarity = (typeof COMPANION_RARITIES)[number]["id"];
@@ -38,7 +37,7 @@ export const COMPANIONS = [
   {
     id: "snail",
     name: "Singe productif",
-    rarity: "uncommon",
+    rarity: "rare",
     passive: "Réduit de 15 % le délai de réapparition par niveau.",
     bonusByLevel: [
       "−15 % au délai de réapparition",
@@ -61,7 +60,7 @@ export const COMPANIONS = [
   {
     id: "squirrel",
     name: "Écureuil prévoyant",
-    rarity: "epic",
+    rarity: "uncommon",
     passive: "Augmente le nombre maximal de pépites de base dans l’arène.",
     bonusByLevel: [
       "+2 pépites de base au maximum à l’écran",
@@ -274,8 +273,12 @@ export class GameProgression {
   }
 
   private summonOne(): SummonResult {
-    const availableCompanions = COMPANIONS.filter(
-      ({ id }) => this.companionLevels[id] < MAX_COMPANION_LEVEL,
+    const availableCompanions = COMPANION_RARITIES.flatMap(({ id: rarity }) =>
+      COMPANIONS.filter(
+        (companion) =>
+          companion.rarity === rarity &&
+          this.companionLevels[companion.id] < MAX_COMPANION_LEVEL,
+      ),
     );
     if (availableCompanions.length === 0) {
       return { kind: "all-maxed" };

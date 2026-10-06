@@ -277,6 +277,63 @@ canvas {
   line-height: 1.4;
 }
 
+.summon-chance-help {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.25rem;
+}
+
+.summon-chance-help > summary {
+  display: grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  place-items: center;
+  border: 1px solid #655b4d;
+  border-radius: 50%;
+  color: #655b4d;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+
+.summon-chance-help > summary::-webkit-details-marker {
+  display: none;
+}
+
+.summon-chance-help > summary:hover,
+.summon-chance-help[open] > summary {
+  border-color: #c93324;
+  color: #a9251b;
+}
+
+.summon-chance-popover {
+  position: absolute;
+  z-index: 2;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  width: min(18rem, calc(100vw - 3rem));
+  padding: 0.875rem;
+  border: 2px solid #191815;
+  background: #f4eddf;
+  box-shadow: 3px 3px 0 #191815;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.summon-chance-popover p {
+  margin: 0.4rem 0;
+  color: #655b4d;
+}
+
+.summon-chance-popover ul {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
+}
+
 .companion-list {
   display: grid;
   gap: 0.375rem;
@@ -345,10 +402,6 @@ canvas {
 
 .companion-rarity.rarity-rare {
   color: #345f91;
-}
-
-.companion-rarity.rarity-epic {
-  color: #7157a5;
 }
 
 .companion-level {
