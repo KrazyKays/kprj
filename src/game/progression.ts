@@ -35,6 +35,17 @@ export const COMPANIONS = [
     ],
   },
   {
+    id: "squirrel",
+    name: "Écureuil prévoyant",
+    rarity: "uncommon",
+    passive: "Augmente le nombre maximal de pépites de base dans l’arène.",
+    bonusByLevel: [
+      "+2 pépites de base au maximum à l’écran",
+      "+4 pépites de base au maximum à l’écran",
+      "+6 pépites de base au maximum à l’écran",
+    ],
+  },
+  {
     id: "snail",
     name: "Singe productif",
     rarity: "rare",
@@ -55,17 +66,6 @@ export const COMPANIONS = [
       "1 jeton aspirant actif",
       "2 jetons aspirants actifs",
       "3 jetons aspirants actifs",
-    ],
-  },
-  {
-    id: "squirrel",
-    name: "Écureuil prévoyant",
-    rarity: "uncommon",
-    passive: "Augmente le nombre maximal de pépites de base dans l’arène.",
-    bonusByLevel: [
-      "+2 pépites de base au maximum à l’écran",
-      "+4 pépites de base au maximum à l’écran",
-      "+6 pépites de base au maximum à l’écran",
     ],
   },
 ] as const;

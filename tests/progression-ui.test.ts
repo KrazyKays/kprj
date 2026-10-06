@@ -57,6 +57,17 @@ describe("progression UI", () => {
     expect(document.getElementById("companion-list")?.textContent).toContain(
       "+6 pépites de base au maximum à l’écran",
     );
+    expect(
+      [...document.querySelectorAll("#companion-list summary strong")].map(
+        (name) => name.textContent,
+      ),
+    ).toEqual([
+      "Moustique magnétique",
+      "Lapin rapide",
+      "Écureuil prévoyant",
+      "Singe productif",
+      "Crabe trou noir",
+    ]);
     expect(document.getElementById("companion-list")?.textContent).toContain(
       "Commun",
     );
@@ -80,7 +91,7 @@ describe("progression UI", () => {
 
     expect(
       document.querySelector(
-        "#companion-list details:nth-child(4) summary output",
+        "#companion-list details:nth-child(5) summary output",
       )?.textContent,
     ).toBe("Niv. 1");
   });
