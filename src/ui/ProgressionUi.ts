@@ -56,6 +56,8 @@ export function bindProgressionUi(
     item.className = "companion-entry";
 
     const summary = document.createElement("summary");
+    const identity = document.createElement("span");
+    identity.className = "companion-identity";
     const name = document.createElement("strong");
     name.textContent = companion.name;
 
@@ -69,6 +71,8 @@ export function bindProgressionUi(
 
     const rarity = document.createElement("span");
     rarity.className = `companion-rarity rarity-${companion.rarity}`;
+    identity.append(name, rarity);
+    summary.append(identity, level);
 
     const bonusLevels = document.createElement("ol");
     bonusLevels.className = "companion-bonus-levels";
@@ -85,7 +89,7 @@ export function bindProgressionUi(
       bonuses,
     });
 
-    item.append(summary, rarity, passive, bonusLevels);
+    item.append(summary, passive, bonusLevels);
     companionList.append(item);
   }
 

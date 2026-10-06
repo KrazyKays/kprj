@@ -59,6 +59,11 @@ describe("progression UI", () => {
     expect(document.getElementById("companion-list")?.textContent).toContain(
       "Épique · 2 % de chance actuelle",
     );
+    expect(
+      document.querySelector(
+        "#companion-list details:first-child summary",
+      )?.textContent,
+    ).toContain("Commun · 35 % de chance actuelle");
 
     for (let i = 0; i < SUMMON_COST; i += 1) {
       progression.collectResource();
