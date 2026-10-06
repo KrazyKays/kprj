@@ -37,9 +37,9 @@ mécaniques ou demandent des choix de conception.
    avec les ressources spéciales déclenchant un effet immédiat pour distinguer
    clairement ces effets des monnaies dépensables.
 6. **Historique visuel des actions** — afficher les événements récents (par
-   exemple collecte, invocation et utilisation d’une action) dans un encart
-   distinct. Implémenté pour les collectes et invocations, avec un historique
-   éphémère des cinq dernières actions ; intégrer les futures actions lorsqu’elles
+   exemple invocation et utilisation d’une action, mais pas les collectes
+   ordinaires) dans un encart distinct. Implémenté avec un historique éphémère
+   des cinq dernières invocations ; intégrer les futures actions lorsqu’elles
    seront ajoutées.
 7. **Arènes alternatives avec obstacles ou murs** — permettre de choisir entre
    plusieurs configurations d’arène. Définir les règles de collision, les

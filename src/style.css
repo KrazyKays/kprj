@@ -180,12 +180,20 @@ canvas {
   background: #655b4d;
 }
 
+.summon-all-button.is-multi-summon {
+  background: #c93324;
+}
+
 .summon-button:not(:disabled):hover {
   background: #a9251b;
 }
 
 .summon-all-button:not(:disabled):hover {
   background: #4a4339;
+}
+
+.summon-all-button.is-multi-summon:not(:disabled):hover {
+  background: #a9251b;
 }
 
 .summon-button:not(:disabled):active {
@@ -207,6 +215,11 @@ canvas {
   color: #a9251b;
   font-weight: 700;
   line-height: 1.5;
+}
+
+.summon-result:empty,
+.summon-preview:empty {
+  display: none;
 }
 
 .summon-preview {

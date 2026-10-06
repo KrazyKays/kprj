@@ -92,13 +92,16 @@ export function bindProgressionUi(progression: GameProgression): () => void {
     summonAllButton.textContent = allMaxed
       ? "Tous les compagnons sont au niveau max"
       : snapshot.affordableSummons > 0
-        ? `Invoquer tout · ${snapshot.affordableSummons} fois`
+        ? `Invoquer tout · ${snapshot.affordableSummons} fois · ${snapshot.affordableSummonCost} ressources`
         : "Invoquer tout";
-    summonPreview.textContent = allMaxed
-      ? "Tous les bonus ont été débloqués."
-      : snapshot.affordableSummons > 0
-        ? `Coût total : ${snapshot.affordableSummonCost} ressources.`
-        : `Prochaine invocation : ${snapshot.summonCost} ressources.`;
+    summonAllButton.classList.toggle(
+      "is-multi-summon",
+      snapshot.affordableSummons > 1,
+    );
+    summonPreview.textContent =
+      !allMaxed && snapshot.affordableSummons === 0
+        ? `Prochaine invocation : ${snapshot.summonCost} ressources.`
+        : "";
 
     actionHistory.replaceChildren(
       ...snapshot.recentActions.map((action) => {
@@ -115,7 +118,7 @@ export function bindProgressionUi(progression: GameProgression): () => void {
 
     switch (result.kind) {
       case "success":
-        summonResult.textContent = `${result.companion.name} passe au niveau ${result.level}.`;
+        summonResult.textContent = "";
         break;
       case "insufficient-resources":
         summonResult.textContent = `Il faut ${progression.getSummonCost()} ressources pour invoquer.`;
@@ -131,9 +134,7 @@ export function bindProgressionUi(progression: GameProgression): () => void {
 
     switch (result.kind) {
       case "success":
-        summonResult.textContent = `${result.summons.length} invocation${
-          result.summons.length === 1 ? "" : "s"
-        } effectuée${result.summons.length === 1 ? "" : "s"}.`;
+        summonResult.textContent = "";
         break;
       case "insufficient-resources":
         summonResult.textContent = `Il faut ${progression.getSummonCost()} ressources pour invoquer.`;

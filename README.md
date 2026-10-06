@@ -27,8 +27,10 @@ compagnons améliorent respectivement le rayon de collecte (+25 % par niveau),
 la vitesse du joueur (+15 % par niveau) et le délai de réapparition des
 ressources (-15 % par niveau). Le panneau détaille le bonus cumulé de chaque
 niveau et met en évidence les niveaux débloqués et le prochain ; les détails
-peuvent être dépliés pour garder le panneau compact. Un historique séparé
-conserve les cinq actions les plus récentes, dont les collectes et invocations.
+peuvent être dépliés pour garder le panneau compact. Le bouton d’invocation
+groupée indique directement le nombre de tirages possibles et leur coût total ;
+il passe en rouge quand au moins deux compagnons peuvent être invoqués. Un
+historique séparé conserve les cinq invocations les plus récentes.
 La progression est réinitialisée au rechargement de la page.
 
 L’arène conserve un format carré : le panneau de ressources et d’actions est

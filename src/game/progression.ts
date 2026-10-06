@@ -127,7 +127,6 @@ export class GameProgression {
 
   collectResource(): void {
     this.resources += 1;
-    this.recordAction("Ressource ordinaire récupérée (+1).");
     this.notify();
   }
 

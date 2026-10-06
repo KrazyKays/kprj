@@ -95,22 +95,34 @@ describe("GameProgression", () => {
     expect(snapshots).toEqual([12, 1]);
   });
 
-  it("keeps only the five most recent collection and summon actions", () => {
+  it("does not add resource collections to the action history", () => {
     const progression = new GameProgression(() => 0);
     collect(progression, 11);
-    progression.summon();
-    progression.summon();
+
+    expect(progression.getSnapshot().recentActions).toEqual([]);
+  });
+
+  it("keeps only the five most recent summon actions", () => {
+    const progression = new GameProgression(() => 0);
+    const summonCount = 6;
+    const totalCost =
+      (summonCount *
+        (2 * SUMMON_COST + (summonCount - 1) * SUMMON_COST_INCREMENT)) /
+      2;
+    collect(progression, totalCost);
+
+    for (let i = 0; i < summonCount; i += 1) {
+      progression.summon();
+    }
 
     const { recentActions } = progression.getSnapshot();
     expect(recentActions).toHaveLength(MAX_RECENT_ACTIONS);
-    expect(recentActions.slice(0, 2)).toEqual([
+    expect(recentActions).toEqual([
+      "Lapin rapide invoqué · niveau 3.",
+      "Lapin rapide invoqué · niveau 2.",
+      "Lapin rapide invoqué · niveau 1.",
+      "Moustique doré invoqué · niveau 3.",
       "Moustique doré invoqué · niveau 2.",
-      "Moustique doré invoqué · niveau 1.",
-    ]);
-    expect(recentActions.slice(2)).toEqual([
-      "Ressource ordinaire récupérée (+1).",
-      "Ressource ordinaire récupérée (+1).",
-      "Ressource ordinaire récupérée (+1).",
     ]);
   });
 
