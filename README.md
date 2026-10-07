@@ -6,7 +6,9 @@ Petit jeu 2D navigateur construit avec TypeScript, Phaser 3 et Vite.
 
 Cliquez ou touchez un point de l’arène pour y déplacer le joueur. Cliquez ou
 touchez une autre position pendant son déplacement pour changer sa destination.
-Les clics et touchers en dehors de l’arène sont ignorés.
+Les clics et touchers en dehors de l’arène sont ignorés. Quatre murs
+éparpillés gênent la progression directe, font glisser le joueur le long des
+parois et obligent à contourner les obstacles pour atteindre les ressources.
 
 Le joueur ramasse les pépites dès que leur bord touche le cercle rouge autour
 de lui. Le rayon du cercle et le rayon de la pépite sont pris en compte ensemble,

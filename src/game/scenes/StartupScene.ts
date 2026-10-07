@@ -6,6 +6,14 @@ import {
 import type { GameProgression } from "../progression";
 import { RENDER_SCALE } from "../renderScale";
 import type { TutorialGuide } from "../tutorial";
+import {
+  DEFAULT_WALLS,
+  isCircleCollidingWithAnyObstacle,
+  moveCircleWithObstacles,
+  resolveCirclePosition,
+  scaleObstacles,
+  type ObstacleRect,
+} from "../obstacles";
 
 const ARENA = {
   left: 24 * RENDER_SCALE,
@@ -39,6 +47,10 @@ export class StartupScene extends Phaser.Scene {
   private observedResourceCapacity = RESOURCE_LOCATIONS.length;
   private specialTokens: Phaser.GameObjects.Star[] = [];
   private pendingSpecialTokenSpawns = 0;
+  private readonly walls: ObstacleRect[] = scaleObstacles(
+    DEFAULT_WALLS,
+    RENDER_SCALE,
+  );
 
   constructor(
     private readonly progression: GameProgression,
@@ -72,6 +84,26 @@ export class StartupScene extends Phaser.Scene {
       }
     }
 
+    const wallsGraphics = this.add.graphics().setDepth(2);
+    for (const wall of this.walls) {
+      // Solid dark ink fill
+      wallsGraphics.fillStyle(0x231f1c, 1);
+      wallsGraphics.fillRect(wall.x, wall.y, wall.width, wall.height);
+
+      // Inner subtle border for printed relief effect
+      wallsGraphics.lineStyle(RENDER_SCALE, 0x473e35, 0.85);
+      wallsGraphics.strokeRect(
+        wall.x + 2 * RENDER_SCALE,
+        wall.y + 2 * RENDER_SCALE,
+        wall.width - 4 * RENDER_SCALE,
+        wall.height - 4 * RENDER_SCALE,
+      );
+
+      // Black outline matching arena borders and entities
+      wallsGraphics.lineStyle(3 * RENDER_SCALE, 0x191815, 1);
+      wallsGraphics.strokeRect(wall.x, wall.y, wall.width, wall.height);
+    }
+
     this.collectionZone = this.add
       .circle(
         320 * RENDER_SCALE,
@@ -80,21 +112,25 @@ export class StartupScene extends Phaser.Scene {
         0xc93324,
         0.08,
       )
-      .setStrokeStyle(2 * RENDER_SCALE, 0xc93324, 1);
+      .setStrokeStyle(2 * RENDER_SCALE, 0xc93324, 1)
+      .setDepth(1);
 
     this.resources = RESOURCE_LOCATIONS.map(({ x, y }) =>
       this.add
         .circle(x * RENDER_SCALE, y * RENDER_SCALE, RESOURCE_RADIUS, 0xe2a82e)
-        .setStrokeStyle(3 * RENDER_SCALE, 0x191815),
+        .setStrokeStyle(3 * RENDER_SCALE, 0x191815)
+        .setDepth(3),
     );
 
     this.player = this.add
       .circle(320 * RENDER_SCALE, 320 * RENDER_SCALE, PLAYER_RADIUS, 0xc93324)
-      .setStrokeStyle(3 * RENDER_SCALE, 0x191815);
+      .setStrokeStyle(3 * RENDER_SCALE, 0x191815)
+      .setDepth(4);
 
     this.destinationMarker = this.add
       .circle(320 * RENDER_SCALE, 320 * RENDER_SCALE, 8 * RENDER_SCALE)
       .setStrokeStyle(2 * RENDER_SCALE, 0x191815)
+      .setDepth(4)
       .setVisible(false);
 
     this.input.on(Phaser.Input.Events.POINTER_DOWN, this.setDestination, this);
@@ -102,18 +138,22 @@ export class StartupScene extends Phaser.Scene {
 
   update(_time: number, delta: number): void {
     if (this.destination) {
-      const deltaX = this.destination.x - this.player.x;
-      const deltaY = this.destination.y - this.player.y;
-      const distance = Math.hypot(deltaX, deltaY);
-      const step = this.progression.getMovementSpeed(PLAYER_SPEED) * (delta / 1000);
+      const step =
+        this.progression.getMovementSpeed(PLAYER_SPEED) * (delta / 1000);
+      const result = moveCircleWithObstacles(
+        { x: this.player.x, y: this.player.y },
+        this.destination,
+        step,
+        PLAYER_RADIUS,
+        this.walls,
+        ARENA,
+      );
 
-      if (distance <= step) {
-        this.player.setPosition(this.destination.x, this.destination.y);
+      this.player.setPosition(result.position.x, result.position.y);
+
+      if (result.reached) {
         this.destination = null;
         this.destinationMarker.setVisible(false);
-      } else {
-        this.player.x += (deltaX / distance) * step;
-        this.player.y += (deltaY / distance) * step;
       }
     }
 
@@ -148,8 +188,18 @@ export class StartupScene extends Phaser.Scene {
       ARENA.bottom - PLAYER_RADIUS,
     );
 
-    this.destination = new Phaser.Math.Vector2(destinationX, destinationY);
-    this.destinationMarker.setPosition(destinationX, destinationY).setVisible(true);
+    const resolved = resolveCirclePosition(
+      destinationX,
+      destinationY,
+      PLAYER_RADIUS,
+      this.walls,
+      ARENA,
+    );
+
+    this.destination = new Phaser.Math.Vector2(resolved.x, resolved.y);
+    this.destinationMarker
+      .setPosition(resolved.x, resolved.y)
+      .setVisible(true);
     this.tutorial.onMoveCommand();
   }
 
@@ -320,7 +370,8 @@ export class StartupScene extends Phaser.Scene {
           RESOURCE_RADIUS,
           0x7157a5,
         )
-        .setStrokeStyle(3 * RENDER_SCALE, 0x191815),
+        .setStrokeStyle(3 * RENDER_SCALE, 0x191815)
+        .setDepth(3),
     );
   }
 
@@ -349,7 +400,8 @@ export class StartupScene extends Phaser.Scene {
 
     const resource = this.add
       .circle(position.x, position.y, RESOURCE_RADIUS, 0xe2a82e)
-      .setStrokeStyle(3 * RENDER_SCALE, 0x191815);
+      .setStrokeStyle(3 * RENDER_SCALE, 0x191815)
+      .setDepth(3);
 
     this.resources.push(resource);
   }
@@ -375,8 +427,14 @@ export class StartupScene extends Phaser.Scene {
             Phaser.Math.Distance.Between(x, y, resource.x, resource.y) >
             RESOURCE_SPAWN_SPACING,
         );
+        const wallsClear = !isCircleCollidingWithAnyObstacle(
+          x,
+          y,
+          RESOURCE_RADIUS + 4 * RENDER_SCALE,
+          this.walls,
+        );
 
-        if (playerClear && resourcesClear) {
+        if (playerClear && resourcesClear && wallsClear) {
           positions.push(new Phaser.Math.Vector2(x, y));
         }
       }

@@ -41,10 +41,12 @@ mécaniques ou demandent des choix de conception.
    ordinaires) dans un encart distinct. Implémenté avec un historique éphémère
    des cinq dernières invocations ; intégrer les futures actions lorsqu’elles
    seront ajoutées.
-7. **Arènes alternatives avec obstacles ou murs** — permettre de choisir entre
-   plusieurs configurations d’arène. Définir les règles de collision, les
-   déplacements et l’emplacement des ressources autour des obstacles ; cette
-   évolution peut nécessiter de généraliser la géométrie actuellement fixe.
+7. **Obstacles et arènes alternatives** — Implémenté pour la configuration
+   de base avec 4 murs éparpillés entravant les trajectoires directes, gérant
+   la collision et le glissement le long des parois, le recalage des
+   destinations et l’apparition des ressources hors des obstacles. Permettre
+   ultérieurement de choisir entre plusieurs configurations ou géométries
+   d’arène.
 
 ## Format suggéré
 
