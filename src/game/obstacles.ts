@@ -17,10 +17,10 @@ export interface ArenaBounds {
  * Specified in unscaled arena coordinates.
  */
 export const DEFAULT_WALLS: readonly ObstacleRect[] = [
-  { x: 184, y: 180, width: 88, height: 24 }, // Top-left horizontal wall
-  { x: 416, y: 176, width: 24, height: 88 }, // Top-right vertical wall
-  { x: 200, y: 376, width: 24, height: 88 }, // Bottom-left vertical wall
-  { x: 368, y: 436, width: 88, height: 24 }, // Bottom-right horizontal wall
+  { x: 220, y: 140, width: 120, height: 24 }, // Top-left horizontal wall
+  { x: 460, y: 220, width: 40, height: 72 }, // Top-right vertical block
+  { x: 120, y: 400, width: 104, height: 24 }, // Bottom-left horizontal wall
+  { x: 400, y: 380, width: 24, height: 120 }, // Bottom-right vertical wall
 ];
 
 export function scaleObstacle(
