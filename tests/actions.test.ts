@@ -18,7 +18,6 @@ function mountUi(progression: GameProgression, tutorial = new TutorialGuide()): 
     <span id="fragment-unit"></span>
     <button id="wall-removal-button" type="button"></button>
     <button id="auto-summon-button" type="button"></button>
-    <p id="action-hint"></p>
   `;
   unsubscribe = bindActionsUi(progression, tutorial);
 }
@@ -79,9 +78,6 @@ describe("fragments and wall removal", () => {
 
     expect(document.getElementById("fragment-count")?.textContent).toBe("0");
     expect(button.disabled).toBe(true);
-    expect(document.getElementById("action-hint")?.textContent).toContain(
-      `${WALL_REMOVAL_COST} fragments`,
-    );
 
     progression.collectFragment(WALL_REMOVAL_COST);
     expect(button.disabled).toBe(false);

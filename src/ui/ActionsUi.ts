@@ -16,14 +16,12 @@ export function bindActionsUi(
   const fragmentUnit = document.getElementById("fragment-unit");
   const wallRemovalButton = document.getElementById("wall-removal-button");
   const autoSummonButton = document.getElementById("auto-summon-button");
-  const actionHint = document.getElementById("action-hint");
 
   if (
     !(fragmentCount instanceof HTMLOutputElement) ||
     !(fragmentUnit instanceof HTMLElement) ||
     !(wallRemovalButton instanceof HTMLButtonElement) ||
-    !(autoSummonButton instanceof HTMLButtonElement) ||
-    !(actionHint instanceof HTMLElement)
+    !(autoSummonButton instanceof HTMLButtonElement)
   ) {
     throw new Error("L’interface des actions est incomplète.");
   }
@@ -63,16 +61,6 @@ export function bindActionsUi(
         ? "Invocation automatique : activée"
         : "Invocation automatique : désactivée";
 
-    const missing: string[] = [];
-    if (!unlocked && snapshot.fragments < snapshot.autoSummonCost) {
-      missing.push(`${snapshot.autoSummonCost} fragments pour débloquer l’invocation automatique`);
-    }
-    if (!noWalls && !canRemoveWall) {
-      missing.push(`${cost} fragments pour supprimer un mur`);
-    }
-    actionHint.textContent = missing.length
-      ? `Il faut ${missing.join(" · ")}.`
-      : "";
     // Les invocations automatiques doivent aussi faire avancer le tutoriel.
     const levels = sumLevels(snapshot);
     if (
