@@ -2,6 +2,7 @@ export const SUMMON_COST = 5;
 export const SUMMON_COST_INCREMENT = 1;
 export const MAX_COMPANION_LEVEL = 3;
 export const MAX_RECENT_ACTIONS = 5;
+export const SECONDARY_RESOURCE_NAME = "Matière noire";
 
 export const COMPANION_RARITIES = [
   { id: "common", name: "Commun", weight: 70 },
@@ -74,6 +75,7 @@ export type CompanionId = (typeof COMPANIONS)[number]["id"];
 
 export interface ProgressionSnapshot {
   resources: number;
+  secondaryResources: number;
   summonCost: number;
   affordableSummons: number;
   affordableSummonCost: number;
@@ -102,6 +104,7 @@ type ProgressionListener = (snapshot: ProgressionSnapshot) => void;
 
 export class GameProgression {
   private resources = 0;
+  private secondaryResources = 0;
   private successfulSummons = 0;
   private readonly companionLevels: Record<CompanionId, number> = {
     mosquito: 0,
@@ -119,6 +122,7 @@ export class GameProgression {
     const affordableSummons = this.getAffordableSummons();
     return {
       resources: this.resources,
+      secondaryResources: this.secondaryResources,
       summonCost: this.getSummonCost(),
       affordableSummons: affordableSummons.count,
       affordableSummonCost: affordableSummons.cost,
@@ -168,6 +172,21 @@ export class GameProgression {
     this.notify();
   }
 
+  collectSecondaryResource(amount = 1): void {
+    this.secondaryResources += amount;
+    this.notify();
+  }
+
+  spendSecondaryResource(amount: number): boolean {
+    if (this.secondaryResources < amount) {
+      return false;
+    }
+
+    this.secondaryResources -= amount;
+    this.notify();
+    return true;
+  }
+
   summon(): SummonResult {
     const result = this.summonOne();
     if (result.kind === "success") {
@@ -213,6 +232,10 @@ export class GameProgression {
 
   getBaseResourceCapacity(baseCapacity: number): number {
     return baseCapacity + this.companionLevels.squirrel * 2;
+  }
+
+  getSecondaryResourceCount(): number {
+    return this.secondaryResources;
   }
 
   getCompanionLevel(id: CompanionId): number {

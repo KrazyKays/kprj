@@ -47,14 +47,12 @@ mécaniques ou demandent des choix de conception.
    destinations et l'apparition des ressources hors des obstacles. Permettre
    ultérieurement de choisir entre plusieurs configurations ou géométries
    d'arène.
-8. **Nouvelle ressource secondaire et compagnon associé** — Ajouter un nouveau
-   type de ressource (monnaie alternative distincte des pépites ordinaires) dont
-   l'apparition et la quantité à l'écran sont contrôlées par un nouveau compagnon
-   dédié. Le compagnon génère un nombre de ressources proportionnel à son niveau
-   (par exemple 1 par niveau). Décider du visuel, du nom, des règles d'apparition
-   (emplacement, fréquence, respawn) et de l'affichage du compteur dans l'UI.
-   Coordonner avec l'item 5 (ressources alternatives) pour que les distinctions
-   entre types de ressources restent lisibles. Prérequis pour les items 9 et 10.
+8. **Nouvelle ressource secondaire et compagnon associé** — Implémenté dans la
+   version actuelle avec la ressource secondaire « matière noire » rapportée par le
+   Crabe trou noir : chaque absorption de jeton ajoute un montant proportionnel au
+   niveau du compagnon et l'affichage du compteur est visible dans le panneau. La
+   logique reste compatible avec l'item 5 (ressources alternatives) et prépare le
+   terrain pour les items 9 et 10. Prérequis pour les items 9 et 10.
 9. **Action : traversée de murs** — Permettre au joueur de dépenser un certain
    coût en ressources secondaires (item 8) pour activer temporairement ou
    définitivement la capacité à traverser les murs de l'arène. Définir la durée

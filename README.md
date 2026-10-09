@@ -41,7 +41,10 @@ la vitesse du joueur (+15 % par niveau), le délai de réapparition des pépites
 (un par niveau) grâce au Crabe trou noir, et la capacité maximale de pépites de
 base à l’écran (+2, +4 puis +6) grâce à l’Écureuil prévoyant.
 Les jetons violets absorbent jusqu’aux trois pépites les plus proches,
-qui sont créditées au compteur, puis réapparaissent après six secondes. Le
+qui sont créditées au compteur, puis réapparaissent après six secondes. Chaque
+absorption rapporte aussi une quantité de matière noire proportionnelle au niveau
+du Crabe trou noir, visible dans le panneau comme ressource secondaire distincte
+et dédiée aux futures actions. Le
 panneau détaille le bonus de chaque
 niveau et met en évidence les niveaux débloqués et le prochain ; les détails
 peuvent être dépliés pour garder le panneau compact. Le bouton d’invocation

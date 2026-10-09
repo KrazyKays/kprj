@@ -294,6 +294,8 @@ export class StartupScene extends Phaser.Scene {
         this.resources,
         SPECIAL_TOKEN_ABSORBED_RESOURCE_COUNT,
       );
+      const secondaryReward = Math.max(1, this.progression.getCompanionLevel("crab"));
+      this.progression.collectSecondaryResource(secondaryReward);
       const absorbedSet = new Set(absorbedResources);
       this.resources = this.resources.filter((resource) => {
         if (!absorbedSet.has(resource)) {
