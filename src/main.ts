@@ -11,5 +11,5 @@ const progression = new GameProgression();
 const tutorial = new TutorialGuide();
 new Phaser.Game(createGameConfig(progression, tutorial));
 bindProgressionUi(progression, tutorial);
-bindActionsUi(progression);
+bindActionsUi(progression, tutorial);
 bindTutorialUi(tutorial);

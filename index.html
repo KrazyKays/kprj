@@ -68,16 +68,19 @@
           <p class="companion-hint">Touchez un compagnon pour voir le détail de ses bonus.</p>
           <p class="panel-placeholder">La partie s’efface au prochain rechargement.</p>
         </section>
-        <section class="panel-card" aria-labelledby="fragment-actions-title">
-          <h2 id="fragment-actions-title">Actions</h2>
-          <div class="summon-actions">
-            <button id="wall-removal-button" class="summon-button" type="button" aria-pressed="false" disabled>
-              Supprimer un mur · 1 fragment
-            </button>
-          </div>
-          <p id="action-hint" class="summon-result" role="status" aria-live="polite"></p>
-          <p class="panel-placeholder">Les fragments sont dépensés pour ces actions.</p>
-        </section>
+      </aside>
+      <aside class="actions-panel panel-card" aria-labelledby="fragment-actions-title">
+        <h2 id="fragment-actions-title">Actions</h2>
+        <div class="summon-actions">
+          <button id="auto-summon-button" class="summon-button auto-summon-button" type="button" aria-pressed="false">
+            Achat auto d’invocations : désactivé
+          </button>
+          <button id="wall-removal-button" class="summon-button" type="button" aria-pressed="false" disabled>
+            Supprimer un mur · 1 fragment
+          </button>
+        </div>
+        <p id="action-hint" class="summon-result" role="status" aria-live="polite"></p>
+        <p class="panel-placeholder">L’achat auto dépense les pépites dès qu’une invocation est possible ; les fragments servent aux autres actions.</p>
       </aside>
       <aside class="history-panel panel-card" aria-labelledby="history-title">
         <h2 id="history-title">Historique</h2>

@@ -146,7 +146,8 @@ canvas {
   gap: 0.875rem;
 }
 
-.history-panel {
+.history-panel,
+.actions-panel {
   min-width: 0;
 }
 
@@ -221,6 +222,23 @@ canvas {
 .summon-all-button {
   border-color: #191815;
   background: #655b4d;
+}
+
+.auto-summon-button {
+  height: 3.5rem;
+  background: #655b4d;
+}
+
+.auto-summon-button.is-active {
+  background: #2f7a4b;
+}
+
+.auto-summon-button:not(:disabled):hover {
+  background: #4a4339;
+}
+
+.auto-summon-button.is-active:not(:disabled):hover {
+  background: #25603b;
 }
 
 .summon-all-button.is-multi-summon {
@@ -471,9 +489,18 @@ canvas {
     align-content: center;
   }
 
-  .history-panel {
+  .arena-column {
+    grid-row: 1 / span 3;
+  }
+
+  .actions-panel {
     grid-column: 2;
     grid-row: 2;
+  }
+
+  .history-panel {
+    grid-column: 2;
+    grid-row: 3;
   }
 }
 
@@ -490,18 +517,24 @@ canvas {
 
   .arena-column {
     grid-column: 1;
-    grid-row: 1;
+    grid-row: 1 / span 2;
   }
 
   .game-panel {
     grid-column: 2;
-    grid-row: 1;
+    grid-row: 1 / span 2;
     align-content: start;
+  }
+
+  .actions-panel {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: start;
   }
 
   .history-panel {
     grid-column: 3;
-    grid-row: 1;
+    grid-row: 2;
     align-self: start;
   }
 }

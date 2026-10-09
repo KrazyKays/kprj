@@ -27,6 +27,7 @@ const PLAYER_SPEED = 240 * RENDER_SCALE;
 const RESOURCE_RADIUS = 12 * RENDER_SCALE;
 const RESOURCE_RESPAWN_DELAY = 3000;
 const SPECIAL_TOKEN_RESPAWN_DELAY = 6000;
+const FRAGMENT_RESPAWN_DELAY = 8000;
 const SPECIAL_TOKEN_ABSORBED_RESOURCE_COUNT = 3;
 const RESOURCE_RESPAWN_RETRY_DELAY = 1000;
 const RESOURCE_SPAWN_SPACING = RESOURCE_RADIUS * 2 + 8 * RENDER_SCALE;
@@ -49,6 +50,8 @@ export class StartupScene extends Phaser.Scene {
   private observedResourceCapacity = RESOURCE_LOCATIONS.length;
   private specialTokens: Phaser.GameObjects.Star[] = [];
   private pendingSpecialTokenSpawns = 0;
+  private fragments: Phaser.GameObjects.Rectangle[] = [];
+  private pendingFragmentSpawns = 0;
   private readonly walls: ObstacleRect[] = scaleObstacles(
     DEFAULT_WALLS,
     RENDER_SCALE,
@@ -153,6 +156,94 @@ export class StartupScene extends Phaser.Scene {
     this.ensureResourceCapacity();
     this.ensureSpecialTokens();
     this.collectSpecialTokens(collectionZoneRadius);
+    this.ensureFragments();
+    this.collectFragments(collectionZoneRadius);
+  }
+
+  private ensureFragments(): void {
+    const missingCount =
+      this.progression.getFragmentCapacity() -
+      this.fragments.length -
+      this.pendingFragmentSpawns;
+
+    for (let i = 0; i < missingCount; i += 1) {
+      this.scheduleFragmentSpawn(0);
+    }
+  }
+
+  private collectFragments(collectionZoneRadius: number): void {
+    this.fragments = this.fragments.filter((fragment) => {
+      if (
+        !isResourceTouchingCollectionZone(
+          this.player,
+          fragment,
+          collectionZoneRadius,
+          RESOURCE_RADIUS,
+        )
+      ) {
+        return true;
+      }
+
+      const feedback = this.add
+        .text(fragment.x, fragment.y - 20 * RENDER_SCALE, "+1 FRAGMENT", {
+          fontFamily: "Impact, Arial, sans-serif",
+          fontSize: `${16 * RENDER_SCALE}px`,
+          fontStyle: "bold",
+          color: "#23766b",
+          stroke: "#f4eddf",
+          strokeThickness: 3 * RENDER_SCALE,
+        })
+        .setOrigin(0.5)
+        .setDepth(10);
+
+      this.tweens.add({
+        targets: feedback,
+        y: feedback.y - 24 * RENDER_SCALE,
+        alpha: 0,
+        scale: 1.1,
+        duration: 1000,
+        ease: "Cubic.Out",
+        onComplete: () => feedback.destroy(),
+      });
+
+      fragment.destroy();
+      this.progression.collectFragment();
+      this.scheduleFragmentSpawn(FRAGMENT_RESPAWN_DELAY);
+      return false;
+    });
+  }
+
+  private scheduleFragmentSpawn(delay: number): void {
+    this.pendingFragmentSpawns += 1;
+    this.time.delayedCall(delay, this.spawnPendingFragment, [], this);
+  }
+
+  private spawnPendingFragment(): void {
+    const position = this.findAvailableResourcePosition();
+    if (!position) {
+      this.time.delayedCall(
+        RESOURCE_RESPAWN_RETRY_DELAY,
+        this.spawnPendingFragment,
+        [],
+        this,
+      );
+      return;
+    }
+
+    this.pendingFragmentSpawns -= 1;
+    this.fragments.push(
+      this.add
+        .rectangle(
+          position.x,
+          position.y,
+          RESOURCE_RADIUS * 1.4,
+          RESOURCE_RADIUS * 1.4,
+          0x2f9e8f,
+        )
+        .setAngle(45)
+        .setStrokeStyle(3 * RENDER_SCALE, 0x191815)
+        .setDepth(3),
+    );
   }
 
   private drawWalls(removable: boolean): void {
@@ -451,7 +542,11 @@ export class StartupScene extends Phaser.Scene {
         const playerClear =
           Phaser.Math.Distance.Between(x, y, this.player.x, this.player.y) >
           PLAYER_RADIUS + RESOURCE_RADIUS + 8 * RENDER_SCALE;
-        const resourcesClear = [...this.resources, ...this.specialTokens].every(
+        const resourcesClear = [
+          ...this.resources,
+          ...this.specialTokens,
+          ...this.fragments,
+        ].every(
           (resource) =>
             Phaser.Math.Distance.Between(x, y, resource.x, resource.y) >
             RESOURCE_SPAWN_SPACING,

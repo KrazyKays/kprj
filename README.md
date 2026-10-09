@@ -29,17 +29,18 @@ choix d’invoquer un seul compagnon. Les doublons augmentent le niveau du
 compagnon jusqu’au niveau 3 ; les
 compagnons déjà au niveau maximal ne sont plus inclus dans les tirages. Les raretés sont définies par l’efficacité des passifs pour obtenir des pépites :
 le Moustique magnétique et le Lapin rapide sont communs, l’Écureuil prévoyant
-peu commun, et le Singe productif ainsi que le Crabe trou noir rares. Les chances
+peu commun, et le Singe productif, le Crabe trou noir ainsi que la Pie glaneuse rares. Les chances
 de groupe sont pondérées à 70 %, 20 % et 8 %, puis normalisées et réparties
 également entre les compagnons disponibles de chaque groupe. Quand tous les
 compagnons d’une rareté sont au niveau maximal, sa part est redistribuée entre
 les raretés restantes ; les probabilités détaillées sont consultables depuis
-l’aide « ? » du panneau de recrutement. Les cinq
+l’aide « ? » du panneau de recrutement. Les six
 compagnons améliorent respectivement le rayon de collecte (+25 % par niveau),
 la vitesse du joueur (+15 % par niveau), le délai de réapparition des pépites
 (-15 % par niveau) grâce au Singe productif, l’apparition de jetons aspirants
-(un par niveau) grâce au Crabe trou noir, et la capacité maximale de pépites de
-base à l’écran (+2, +4 puis +6) grâce à l’Écureuil prévoyant.
+(un par niveau) grâce au Crabe trou noir, la capacité maximale de pépites de
+base à l’écran (+2, +4 puis +6) grâce à l’Écureuil prévoyant, et le nombre de
+fragments présents dans l’arène (2, 4 puis 6) grâce à la Pie glaneuse.
 Les jetons violets absorbent jusqu’aux trois pépites les plus proches,
 qui sont créditées au compteur, puis réapparaissent après six secondes. Le
 panneau détaille le bonus de chaque
@@ -50,15 +51,21 @@ il passe en rouge quand au moins deux compagnons peuvent être invoqués. Un
 historique séparé conserve les cinq invocations les plus récentes.
 La progression est réinitialisée au rechargement de la page.
 
-L’arène conserve un format carré : le panneau de ressources et d’actions est
-placé à côté sur grand écran et sous l’arène sur téléphone.
+L’arène conserve un format carré : les panneaux de ressources, d’actions et
+d’historique sont placés à côté sur grand écran (le panneau « Actions » reste
+visible sans défiler, dans une colonne dédiée) et sous l’arène sur téléphone.
 
 Les fragments sont une ressource distincte des pépites, affichée dans le panneau
-« Butin » ; aucun moyen de les obtenir n’existe encore. Ils se dépensent dans le
-panneau « Actions ». La première action, « Supprimer un mur », coûte 1 fragment :
+« Butin ». La Pie glaneuse en fait apparaître 2, 4 ou 6 dans l’arène selon son
+niveau (en forme de losange vert) ; les ramasser ajoute 1 fragment au compteur
+et chacun réapparaît après huit secondes. Ils se dépensent dans le panneau
+« Actions ». « Supprimer un mur » coûte 1 fragment :
 après avoir activé le bouton, un clic sur un mur de l’arène (mis en évidence en
 rouge) le supprime. Le bouton permet d’annuler avant de choisir, sans frais, et
-l’action est inscrite dans l’historique.
+l’action est inscrite dans l’historique. Le bouton « Achat auto d’invocations »
+s’active et se désactive à volonté : tant qu’il est actif, une invocation est
+achetée dès que les pépites le permettent (sans coût en fragments) et signalée
+« automatiquement » dans l’historique.
 
 L’interface adopte une esthétique de fanzine photocopié : papier cassé, trames
 imprimées, contours noirs francs et accents rouge brique.

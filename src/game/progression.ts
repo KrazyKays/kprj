@@ -71,6 +71,18 @@ export const COMPANIONS = [
       "3 jetons aspirants actifs",
     ],
   },
+  {
+    id: "magpie",
+    name: "Pie glaneuse",
+    rarity: "rare",
+    passive:
+      "Fait apparaître 2 fragments par niveau dans l’arène ; chaque fragment ramassé rejoint votre réserve.",
+    bonusByLevel: [
+      "2 fragments à l’écran",
+      "4 fragments à l’écran",
+      "6 fragments à l’écran",
+    ],
+  },
 ] as const;
 
 export type CompanionId = (typeof COMPANIONS)[number]["id"];
@@ -81,6 +93,7 @@ export interface ProgressionSnapshot {
   wallRemovalCost: number;
   wallsRemaining: number;
   wallRemovalActive: boolean;
+  autoSummonEnabled: boolean;
   summonCost: number;
   affordableSummons: number;
   affordableSummonCost: number;
@@ -117,6 +130,7 @@ export class GameProgression {
   private fragments = 0;
   private wallsRemaining = DEFAULT_WALLS.length;
   private wallRemovalActive = false;
+  private autoSummonEnabled = false;
   private successfulSummons = 0;
   private readonly companionLevels: Record<CompanionId, number> = {
     mosquito: 0,
@@ -124,6 +138,7 @@ export class GameProgression {
     snail: 0,
     crab: 0,
     squirrel: 0,
+    magpie: 0,
   };
   private readonly recentActions: string[] = [];
   private readonly listeners = new Set<ProgressionListener>();
@@ -138,6 +153,7 @@ export class GameProgression {
       wallRemovalCost: WALL_REMOVAL_COST,
       wallsRemaining: this.wallsRemaining,
       wallRemovalActive: this.wallRemovalActive,
+      autoSummonEnabled: this.autoSummonEnabled,
       summonCost: this.getSummonCost(),
       affordableSummons: affordableSummons.count,
       affordableSummonCost: affordableSummons.cost,
@@ -184,13 +200,31 @@ export class GameProgression {
 
   collectResource(): void {
     this.resources += 1;
+    if (this.autoSummonEnabled) {
+      this.autoSummon();
+    }
     this.notify();
   }
 
-  // Aucune source de fragments n'existe encore dans le jeu.
-  addFragments(amount: number): void {
+  collectFragment(amount = 1): void {
     this.fragments += amount;
     this.notify();
+  }
+
+  setAutoSummon(enabled: boolean): void {
+    if (this.autoSummonEnabled === enabled) {
+      return;
+    }
+
+    this.autoSummonEnabled = enabled;
+    if (enabled) {
+      this.autoSummon();
+    }
+    this.notify();
+  }
+
+  getFragmentCapacity(): number {
+    return this.companionLevels.magpie * 2;
   }
 
   startWallRemoval(): WallRemovalStartResult {
@@ -302,6 +336,7 @@ export class GameProgression {
       snail: 0,
       crab: 0,
       squirrel: 0,
+      magpie: 0,
     };
     const availableByRarity = COMPANION_RARITIES.map((rarity) => ({
       ...rarity,
@@ -330,8 +365,21 @@ export class GameProgression {
   private recordSummonAction(
     companion: (typeof COMPANIONS)[number],
     level: number,
+    automatic = false,
   ): void {
-    this.recordAction(`${companion.name} invoqué · niveau ${level}.`);
+    this.recordAction(
+      `${companion.name} invoqué${automatic ? " automatiquement" : ""} · niveau ${level}.`,
+    );
+  }
+
+  private autoSummon(): void {
+    while (this.getAffordableSummonCount() > 0) {
+      const result = this.summonOne();
+      if (result.kind !== "success") {
+        return;
+      }
+      this.recordSummonAction(result.companion, result.level, true);
+    }
   }
 
   private recordAction(action: string): void {

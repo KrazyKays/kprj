@@ -68,6 +68,7 @@ describe("GameProgression", () => {
       MAX_COMPANION_LEVEL,
       MAX_COMPANION_LEVEL,
       MAX_COMPANION_LEVEL,
+      MAX_COMPANION_LEVEL,
     ]);
   });
 
@@ -89,8 +90,9 @@ describe("GameProgression", () => {
     expect(progression.getSnapshot().companionChances).toEqual({
       mosquito: (70 / 98 / 2) * 100,
       rabbit: (70 / 98 / 2) * 100,
-      snail: (8 / 98 / 2) * 100,
-      crab: (8 / 98 / 2) * 100,
+      snail: (8 / 98 / 3) * 100,
+      crab: (8 / 98 / 3) * 100,
+      magpie: (8 / 98 / 3) * 100,
       squirrel: (20 / 98) * 100,
     });
 
@@ -116,8 +118,9 @@ describe("GameProgression", () => {
     expect(progression.getSnapshot().companionChances).toEqual({
       mosquito: 0,
       rabbit: 0,
-      snail: (8 / 28 / 2) * 100,
-      crab: (8 / 28 / 2) * 100,
+      snail: (8 / 28 / 3) * 100,
+      crab: (8 / 28 / 3) * 100,
+      magpie: (8 / 28 / 3) * 100,
       squirrel: (20 / 28) * 100,
     });
   });
@@ -128,7 +131,8 @@ describe("GameProgression", () => {
       [0.36, "rabbit"],
       [0.72, "squirrel"],
       [0.93, "snail"],
-      [0.97, "crab"],
+      [0.96, "crab"],
+      [0.99, "magpie"],
     ] as const;
 
     for (const [randomValue, expectedId] of expectedCompanions) {
@@ -226,6 +230,7 @@ describe("GameProgression", () => {
       snail: MAX_COMPANION_LEVEL,
       crab: MAX_COMPANION_LEVEL,
       squirrel: MAX_COMPANION_LEVEL,
+      magpie: MAX_COMPANION_LEVEL,
     });
     expect(progression.getAffordableSummonCount()).toBe(0);
   });
@@ -234,10 +239,11 @@ describe("GameProgression", () => {
     const mosquito = new GameProgression(() => 0);
     const rabbit = new GameProgression(() => 0.4);
     const snail = new GameProgression(() => 0.94);
-    const crab = new GameProgression(() => 0.98);
+    const crab = new GameProgression(() => 0.96);
     const squirrel = new GameProgression(() => 0.8);
+    const magpie = new GameProgression(() => 0.99);
 
-    for (const progression of [mosquito, rabbit, snail, crab, squirrel]) {
+    for (const progression of [mosquito, rabbit, snail, crab, squirrel, magpie]) {
       collect(
         progression,
         SUMMON_COST + (SUMMON_COST + SUMMON_COST_INCREMENT),
@@ -251,6 +257,48 @@ describe("GameProgression", () => {
     expect(snail.getResourceRespawnDelay(3000)).toBe(2100);
     expect(crab.getCompanionLevel("crab")).toBe(2);
     expect(squirrel.getBaseResourceCapacity(6)).toBe(10);
+    expect(magpie.getFragmentCapacity()).toBe(4);
+    expect(new GameProgression().getFragmentCapacity()).toBe(0);
+  });
+
+  it("scales the fragment capacity to 2, 4 and 6 with the magpie level", () => {
+    const progression = new GameProgression(() => 0.99);
+    collect(progression, 5 + 6 + 7);
+
+    for (const capacity of [2, 4, 6]) {
+      expect(progression.summon()).toMatchObject({
+        kind: "success",
+        companion: { id: "magpie" },
+      });
+      expect(progression.getFragmentCapacity()).toBe(capacity);
+    }
+  });
+
+  it("buys summons automatically while the toggle is on", () => {
+    const progression = new GameProgression(() => 0);
+    collect(progression, SUMMON_COST);
+    expect(progression.getSnapshot().companions.mosquito).toBe(0);
+
+    progression.setAutoSummon(true);
+    expect(progression.getSnapshot()).toMatchObject({
+      autoSummonEnabled: true,
+      resources: 0,
+      companions: { mosquito: 1 },
+    });
+    expect(progression.getSnapshot().recentActions[0]).toContain(
+      "invoqué automatiquement",
+    );
+
+    collect(progression, SUMMON_COST + SUMMON_COST_INCREMENT);
+    expect(progression.getSnapshot().companions.mosquito).toBe(2);
+
+    progression.setAutoSummon(false);
+    collect(progression, 20);
+    expect(progression.getSnapshot()).toMatchObject({
+      autoSummonEnabled: false,
+      resources: 20,
+      companions: { mosquito: 2 },
+    });
   });
 
   it("increases the base resource capacity by two per squirrel level", () => {

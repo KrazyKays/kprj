@@ -67,6 +67,7 @@ describe("progression UI", () => {
       "Écureuil prévoyant",
       "Singe productif",
       "Crabe trou noir",
+      "Pie glaneuse",
     ]);
     expect(document.getElementById("companion-list")?.textContent).toContain(
       "Commun",
@@ -81,7 +82,7 @@ describe("progression UI", () => {
       "Moustique magnétique · 35,7 %",
     );
     expect(document.getElementById("companion-chances")?.textContent).toContain(
-      "Singe productif · 4,1 %",
+      "Singe productif · 2,7 %",
     );
 
     for (let i = 0; i < SUMMON_COST; i += 1) {
@@ -91,7 +92,7 @@ describe("progression UI", () => {
 
     expect(
       document.querySelector(
-        "#companion-list details:nth-child(5) summary output",
+        "#companion-list details:nth-child(6) summary output",
       )?.textContent,
     ).toBe("Niv. 1");
   });

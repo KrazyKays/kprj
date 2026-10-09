@@ -47,18 +47,24 @@ mécaniques ou demandent des choix de conception.
    destinations et l'apparition des ressources hors des obstacles. Permettre
    ultérieurement de choisir entre plusieurs configurations ou géométries
    d'arène.
-8. **Fragments (ressource secondaire) et moyen de les obtenir** — La ressource
-   « fragment » existe (compteur dans le panneau « Butin », dépensable dans le
-   panneau « Actions »), distincte des pépites et sans lien avec un compagnon
-   précis. Aucun moyen de l'obtenir n'est encore implémenté : à définir (source
-   dans l'arène, récompense, compagnon dédié éventuel, apparition et respawn).
-   Prérequis pour que les actions 9 et 10 soient jouables. À coordonner avec
-   l'item 5 pour garder lisibles les types de ressources.
+8. **Fragments (ressource secondaire) et moyen de les obtenir** — Implémenté :
+   la ressource « fragment » (compteur dans le panneau « Butin », dépensable
+   dans le panneau « Actions ») est distincte des pépites. La Pie glaneuse
+   (rare) fait apparaître 2/4/6 fragments dans l'arène selon son niveau ; chacun
+   ramassé rapporte 1 fragment et réapparaît après 8 s. Reste à équilibrer la
+   rareté et d'éventuelles autres sources. À coordonner avec l'item 5 pour
+   garder lisibles les types de ressources.
 9. **Action : supprimer un mur** — Implémenté (remplace l'ancienne « traversée
    de murs ») : dans le panneau « Actions », le bouton coûte 1 fragment, met les
    murs en évidence et un clic sur un mur le supprime définitivement ; l'action
    est annulable sans frais et apparaît dans l'historique. Ensuite : décider si
    le coût doit évoluer et si une arène doit pouvoir restaurer ses murs.
+9 bis. **Action : achat automatique d'invocations** — Implémenté : bascule
+   activable/désactivable dans le panneau « Actions » ; tant qu'elle est active,
+   les invocations sont achetées dès que les pépites suffisent (sans coût en
+   fragments) et marquées « automatiquement » dans l'historique. À envisager :
+   un coût ou un déblocage via fragments si l'automatisation doit être une
+   récompense.
 10. **Action : prestige des compagnons** — Permettre au joueur de dépenser des
     fragments (item 8) pour « prestiger » un compagnon : le remettre
     au niveau 0 en échange d'un bonus permanent améliorant ses statistiques
