@@ -47,7 +47,7 @@ panneau détaille le bonus de chaque
 niveau et met en évidence les niveaux débloqués et le prochain ; les détails
 peuvent être dépliés pour garder le panneau compact. Le bouton d’invocation
 groupée indique directement le nombre de tirages possibles et leur coût total ;
-il passe en rouge quand au moins deux compagnons peuvent être invoqués. Un
+il reste mis en évidence quand au moins deux compagnons peuvent être invoqués. Un
 historique séparé conserve les cinq invocations les plus récentes.
 La progression est réinitialisée au rechargement de la page.
 
@@ -59,12 +59,14 @@ Les fragments sont une ressource distincte des pépites, affichée dans le panne
 « Butin ». La Pie glaneuse en fait apparaître 2, 4 ou 6 dans l’arène selon son
 niveau (en forme de losange vert) ; les ramasser ajoute 1 fragment au compteur
 et chacun réapparaît après huit secondes. Ils se dépensent dans le panneau
-« Actions ». « Supprimer un mur » coûte 1 fragment :
-après avoir activé le bouton, un clic sur un mur de l’arène (mis en évidence en
-rouge) le supprime. Le bouton permet d’annuler avant de choisir, sans frais, et
-l’action est inscrite dans l’historique. Le bouton « Achat auto d’invocations »
-s’active et se désactive à volonté : tant qu’il est actif, une invocation est
-achetée dès que les pépites le permettent (sans coût en fragments) et signalée
+« Actions », qui contient aussi les boutons d’invocation (jaune des pépites
+quand ils sont utilisables) ; les actions payées en fragments prennent le vert
+des fragments quand elles sont utilisables. « Supprimer un mur aléatoire »
+coûte 10 fragments et supprime aussitôt un mur tiré au hasard, ce qui est
+inscrit dans l’historique. « Achat auto d’invocations » doit d’abord être
+débloqué pour 20 fragments ; il s’active ensuite et se désactive à volonté :
+tant qu’il est actif, une invocation est
+achetée dès que les pépites le permettent et signalée
 « automatiquement » dans l’historique.
 
 L’interface adopte une esthétique de fanzine photocopié : papier cassé, trames

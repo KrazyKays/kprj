@@ -42,20 +42,6 @@ export function scaleObstacles(
   return obstacles.map((obstacle) => scaleObstacle(obstacle, scale));
 }
 
-export function findObstacleIndexAt(
-  x: number,
-  y: number,
-  obstacles: readonly ObstacleRect[],
-): number {
-  return obstacles.findIndex(
-    (obstacle) =>
-      x >= obstacle.x &&
-      x <= obstacle.x + obstacle.width &&
-      y >= obstacle.y &&
-      y <= obstacle.y + obstacle.height,
-  );
-}
-
 export function isCircleCollidingWithRect(
   circleX: number,
   circleY: number,

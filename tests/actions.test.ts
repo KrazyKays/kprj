@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 
 import { afterEach, describe, expect, it } from "vitest";
-import { findObstacleIndexAt } from "../src/game/obstacles";
 import {
+  AUTO_SUMMON_COST,
   GameProgression,
   SUMMON_COST,
   WALL_REMOVAL_COST,
@@ -30,62 +30,47 @@ afterEach(() => {
 });
 
 describe("fragments and wall removal", () => {
-  it("starts without fragments and refuses to arm the action", () => {
+  it("costs 10 fragments and refuses without enough", () => {
     const progression = new GameProgression();
+    expect(WALL_REMOVAL_COST).toBe(10);
+    progression.collectFragment(WALL_REMOVAL_COST - 1);
 
-    expect(progression.getSnapshot().fragments).toBe(0);
-    expect(progression.startWallRemoval()).toBe("insufficient-fragments");
-    expect(progression.confirmWallRemoval()).toBe(false);
-    expect(progression.getSnapshot().wallRemovalActive).toBe(false);
+    expect(progression.removeRandomWall()).toBe("insufficient-fragments");
+    expect(progression.getSnapshot().fragments).toBe(WALL_REMOVAL_COST - 1);
   });
 
-  it("spends fragments to remove one wall at a time and logs the action", () => {
-    const progression = new GameProgression();
+  it("removes a random wall and reports which one", () => {
+    const progression = new GameProgression(() => 0.99);
     const initialWalls = progression.getSnapshot().wallsRemaining;
     progression.collectFragment(WALL_REMOVAL_COST * 2);
 
-    expect(progression.startWallRemoval()).toBe("ready");
-    expect(progression.confirmWallRemoval()).toBe(true);
+    expect(progression.removeRandomWall()).toBe("removed");
     expect(progression.getSnapshot()).toMatchObject({
       fragments: WALL_REMOVAL_COST,
       wallsRemaining: initialWalls - 1,
-      wallRemovalActive: false,
+      lastRemovedWallIndex: initialWalls - 1,
     });
-    expect(progression.getSnapshot().recentActions[0]).toContain("Mur supprimé");
-    expect(progression.confirmWallRemoval()).toBe(false);
-  });
+    expect(progression.getSnapshot().recentActions[0]).toContain("Mur");
 
-  it("does not charge when the removal is cancelled", () => {
-    const progression = new GameProgression();
-    progression.collectFragment(WALL_REMOVAL_COST);
-    progression.startWallRemoval();
-    progression.cancelWallRemoval();
-
-    expect(progression.confirmWallRemoval()).toBe(false);
-    expect(progression.getSnapshot().fragments).toBe(WALL_REMOVAL_COST);
+    const first = new GameProgression(() => 0);
+    first.collectFragment(WALL_REMOVAL_COST);
+    first.removeRandomWall();
+    expect(first.getSnapshot().lastRemovedWallIndex).toBe(0);
   });
 
   it("stops offering the action when no wall remains", () => {
     const progression = new GameProgression();
     const walls = progression.getSnapshot().wallsRemaining;
-    progression.collectFragment(walls + 1);
+    progression.collectFragment(WALL_REMOVAL_COST * (walls + 1));
 
     for (let i = 0; i < walls; i += 1) {
-      progression.startWallRemoval();
-      progression.confirmWallRemoval();
+      expect(progression.removeRandomWall()).toBe("removed");
     }
 
-    expect(progression.startWallRemoval()).toBe("no-walls");
+    expect(progression.removeRandomWall()).toBe("no-walls");
   });
 
-  it("finds the wall under a point", () => {
-    const walls = [{ x: 10, y: 10, width: 20, height: 20 }];
-
-    expect(findObstacleIndexAt(15, 15, walls)).toBe(0);
-    expect(findObstacleIndexAt(5, 15, walls)).toBe(-1);
-  });
-
-  it("drives the actions panel", () => {
+  it("drives the wall removal button", () => {
     const progression = new GameProgression();
     mountUi(progression);
     const button = document.getElementById(
@@ -95,37 +80,58 @@ describe("fragments and wall removal", () => {
     expect(document.getElementById("fragment-count")?.textContent).toBe("0");
     expect(button.disabled).toBe(true);
     expect(document.getElementById("action-hint")?.textContent).toContain(
-      "fragment",
+      `${WALL_REMOVAL_COST} fragments`,
     );
 
+    progression.collectFragment(WALL_REMOVAL_COST);
+    expect(button.disabled).toBe(false);
+
+    const walls = progression.getSnapshot().wallsRemaining;
+    button.click();
+    expect(progression.getSnapshot().wallsRemaining).toBe(walls - 1);
+    expect(button.disabled).toBe(true);
+  });
+});
+
+describe("automatic summoning", () => {
+  it("must be bought with fragments before it can be toggled", () => {
+    const progression = new GameProgression();
+    mountUi(progression);
+    const button = document.getElementById(
+      "auto-summon-button",
+    ) as HTMLButtonElement;
+
+    expect(button.disabled).toBe(true);
+    expect(button.textContent).toContain(`${AUTO_SUMMON_COST} fragments`);
+    expect(button.classList.contains("fragment-action")).toBe(true);
+
+    progression.collectFragment(AUTO_SUMMON_COST - 1);
+    expect(button.disabled).toBe(true);
     progression.collectFragment();
-    expect(document.getElementById("fragment-unit")?.textContent).toBe(
-      "fragment disponible",
-    );
     expect(button.disabled).toBe(false);
 
     button.click();
-    expect(button.getAttribute("aria-pressed")).toBe("true");
-    expect(button.textContent).toBe("Annuler la suppression");
-
-    button.click();
+    expect(progression.getSnapshot()).toMatchObject({
+      fragments: 0,
+      autoSummonUnlocked: true,
+      autoSummonEnabled: false,
+    });
+    expect(button.classList.contains("fragment-action")).toBe(false);
     expect(button.getAttribute("aria-pressed")).toBe("false");
-    expect(progression.getSnapshot().fragments).toBe(1);
   });
 
-  it("toggles automatic summoning and advances the tutorial when it buys", () => {
+  it("toggles once unlocked and advances the tutorial when it buys", () => {
     const progression = new GameProgression(() => 0);
     const tutorial = new TutorialGuide();
     tutorial.onMoveCommand();
     tutorial.onResourceCollected();
+    progression.collectFragment(AUTO_SUMMON_COST);
     mountUi(progression, tutorial);
     const button = document.getElementById(
       "auto-summon-button",
     ) as HTMLButtonElement;
 
-    expect(button.getAttribute("aria-pressed")).toBe("false");
-    expect(button.textContent).toContain("désactivé");
-
+    button.click();
     button.click();
     expect(button.getAttribute("aria-pressed")).toBe("true");
     expect(button.textContent).toContain("activé");

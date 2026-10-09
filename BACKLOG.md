@@ -55,16 +55,18 @@ mécaniques ou demandent des choix de conception.
    rareté et d'éventuelles autres sources. À coordonner avec l'item 5 pour
    garder lisibles les types de ressources.
 9. **Action : supprimer un mur** — Implémenté (remplace l'ancienne « traversée
-   de murs ») : dans le panneau « Actions », le bouton coûte 1 fragment, met les
-   murs en évidence et un clic sur un mur le supprime définitivement ; l'action
-   est annulable sans frais et apparaît dans l'historique. Ensuite : décider si
-   le coût doit évoluer et si une arène doit pouvoir restaurer ses murs.
-9 bis. **Action : achat automatique d'invocations** — Implémenté : bascule
-   activable/désactivable dans le panneau « Actions » ; tant qu'elle est active,
-   les invocations sont achetées dès que les pépites suffisent (sans coût en
-   fragments) et marquées « automatiquement » dans l'historique. À envisager :
-   un coût ou un déblocage via fragments si l'automatisation doit être une
-   récompense.
+   de murs ») : dans le panneau « Actions », le bouton coûte 10 fragments et
+   supprime immédiatement un mur tiré au hasard ; l'action apparaît dans
+   l'historique. Ensuite : décider si le coût doit évoluer et si une arène doit
+   pouvoir restaurer ses murs.
+9 bis. **Action : achat automatique d'invocations** — Implémenté : à débloquer
+   une fois pour 20 fragments, puis bascule activable/désactivable ; tant
+   qu'elle est active, les invocations sont achetées dès que les pépites
+   suffisent et marquées « automatiquement » dans l'historique.
+9 ter. **Panneaux** — Les boutons d'invocation sont dans « Actions » (jaune des
+   pépites quand utilisables ; vert des fragments pour les actions payées en
+   fragments). Le panneau « Compagnons » a une liste défilante pour rester dans
+   l'écran.
 10. **Action : prestige des compagnons** — Permettre au joueur de dépenser des
     fragments (item 8) pour « prestiger » un compagnon : le remettre
     au niveau 0 en échange d'un bonus permanent améliorant ses statistiques

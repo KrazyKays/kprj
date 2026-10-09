@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  AUTO_SUMMON_COST,
   COMPANIONS,
   GameProgression,
   MAX_RECENT_ACTIONS,
@@ -279,9 +280,16 @@ describe("GameProgression", () => {
     collect(progression, SUMMON_COST);
     expect(progression.getSnapshot().companions.mosquito).toBe(0);
 
+    expect(progression.unlockAutoSummon()).toBe(false);
+    progression.setAutoSummon(true);
+    expect(progression.getSnapshot().autoSummonEnabled).toBe(false);
+
+    progression.collectFragment(AUTO_SUMMON_COST);
+    expect(progression.unlockAutoSummon()).toBe(true);
     progression.setAutoSummon(true);
     expect(progression.getSnapshot()).toMatchObject({
       autoSummonEnabled: true,
+      fragments: 0,
       resources: 0,
       companions: { mosquito: 1 },
     });

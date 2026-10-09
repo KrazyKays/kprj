@@ -44,18 +44,8 @@
           </p>
           <p class="panel-placeholder">Ramassez les pépites pour recruter des compagnons.</p>
         </section>
-        <section class="panel-card" aria-labelledby="actions-title">
-          <h2 id="actions-title">Recrutement</h2>
-          <div class="summon-actions">
-            <button id="summon-button" class="summon-button" type="button" disabled>
-              Invoquer 1 fois · 5 pépites
-            </button>
-            <button id="summon-all-button" class="summon-button summon-all-button" type="button" disabled>
-              Invoquer tout
-            </button>
-          </div>
-          <p id="summon-preview" class="summon-preview" aria-live="polite"></p>
-          <p id="summon-result" class="summon-result" role="status" aria-live="polite"></p>
+        <section class="panel-card companions-card" aria-labelledby="actions-title">
+          <h2 id="actions-title">Compagnons</h2>
           <details class="summon-chance-help">
             <summary aria-label="Afficher les probabilités d’invocation" title="Probabilités d’invocation">?</summary>
             <div class="summon-chance-popover">
@@ -72,15 +62,22 @@
       <aside class="actions-panel panel-card" aria-labelledby="fragment-actions-title">
         <h2 id="fragment-actions-title">Actions</h2>
         <div class="summon-actions">
-          <button id="auto-summon-button" class="summon-button auto-summon-button" type="button" aria-pressed="false">
-            Achat auto d’invocations : désactivé
+          <button id="summon-button" class="summon-button pepite-action" type="button" disabled>
+            Invoquer 1 fois · 5 pépites
           </button>
-          <button id="wall-removal-button" class="summon-button" type="button" aria-pressed="false" disabled>
-            Supprimer un mur · 1 fragment
+          <button id="summon-all-button" class="summon-button summon-all-button pepite-action" type="button" disabled>
+            Invoquer tout
+          </button>
+          <button id="auto-summon-button" class="summon-button auto-summon-button fragment-action" type="button" aria-pressed="false" disabled>
+            Débloquer l’achat auto · 20 fragments
+          </button>
+          <button id="wall-removal-button" class="summon-button fragment-action" type="button" disabled>
+            Supprimer un mur aléatoire · 10 fragments
           </button>
         </div>
+        <p id="summon-preview" class="summon-preview" aria-live="polite"></p>
+        <p id="summon-result" class="summon-result" role="status" aria-live="polite"></p>
         <p id="action-hint" class="summon-result" role="status" aria-live="polite"></p>
-        <p class="panel-placeholder">L’achat auto dépense les pépites dès qu’une invocation est possible ; les fragments servent aux autres actions.</p>
       </aside>
       <aside class="history-panel panel-card" aria-labelledby="history-title">
         <h2 id="history-title">Historique</h2>

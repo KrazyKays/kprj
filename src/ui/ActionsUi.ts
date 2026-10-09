@@ -37,35 +37,42 @@ export function bindActionsUi(
 
     const cost = snapshot.wallRemovalCost;
     const noWalls = snapshot.wallsRemaining === 0;
-    const affordable = snapshot.fragments >= cost;
+    const canRemoveWall = !noWalls && snapshot.fragments >= cost;
 
-    wallRemovalButton.setAttribute(
-      "aria-pressed",
-      String(snapshot.wallRemovalActive),
-    );
-    wallRemovalButton.disabled =
-      !snapshot.wallRemovalActive && (noWalls || !affordable);
-    wallRemovalButton.textContent = snapshot.wallRemovalActive
-      ? "Annuler la suppression"
-      : noWalls
-        ? "Tous les murs sont supprimés"
-        : `Supprimer un mur · ${cost} fragment`;
+    wallRemovalButton.disabled = !canRemoveWall;
+    wallRemovalButton.textContent = noWalls
+      ? "Tous les murs sont supprimés"
+      : `Supprimer un mur aléatoire · ${cost} fragments`;
 
-    autoSummonButton.setAttribute(
-      "aria-pressed",
-      String(snapshot.autoSummonEnabled),
-    );
+    const unlocked = snapshot.autoSummonUnlocked;
+    autoSummonButton.disabled =
+      !unlocked && snapshot.fragments < snapshot.autoSummonCost;
+    autoSummonButton.classList.toggle("fragment-action", !unlocked);
     autoSummonButton.classList.toggle("is-active", snapshot.autoSummonEnabled);
-    autoSummonButton.textContent = snapshot.autoSummonEnabled
-      ? "Achat auto d’invocations : activé"
-      : "Achat auto d’invocations : désactivé";
+    if (unlocked) {
+      autoSummonButton.setAttribute(
+        "aria-pressed",
+        String(snapshot.autoSummonEnabled),
+      );
+    } else {
+      autoSummonButton.removeAttribute("aria-pressed");
+    }
+    autoSummonButton.textContent = !unlocked
+      ? `Débloquer l’achat auto · ${snapshot.autoSummonCost} fragments`
+      : snapshot.autoSummonEnabled
+        ? "Achat auto d’invocations : activé"
+        : "Achat auto d’invocations : désactivé";
 
-    actionHint.textContent = snapshot.wallRemovalActive
-      ? "Cliquez sur un mur de l’arène pour le supprimer."
-      : !noWalls && !affordable
-        ? `Il faut ${cost} fragment pour supprimer un mur.`
-        : "";
-
+    const missing: string[] = [];
+    if (!unlocked && snapshot.fragments < snapshot.autoSummonCost) {
+      missing.push(`${snapshot.autoSummonCost} fragments pour débloquer l’achat auto`);
+    }
+    if (!noWalls && !canRemoveWall) {
+      missing.push(`${cost} fragments pour supprimer un mur`);
+    }
+    actionHint.textContent = missing.length
+      ? `Il faut ${missing.join(" · ")}.`
+      : "";
     // Les invocations automatiques doivent aussi faire avancer le tutoriel.
     const levels = sumLevels(snapshot);
     if (
@@ -79,22 +86,22 @@ export function bindActionsUi(
   };
 
   const unsubscribe = progression.subscribe(render);
-  const toggleWallRemoval = (): void => {
-    if (progression.isWallRemovalActive()) {
-      progression.cancelWallRemoval();
-    } else {
-      progression.startWallRemoval();
-    }
+  const removeWall = (): void => {
+    progression.removeRandomWall();
   };
   const toggleAutoSummon = (): void => {
+    if (!progression.getSnapshot().autoSummonUnlocked) {
+      progression.unlockAutoSummon();
+      return;
+    }
     progression.setAutoSummon(!progression.getSnapshot().autoSummonEnabled);
   };
 
-  wallRemovalButton.addEventListener("click", toggleWallRemoval);
+  wallRemovalButton.addEventListener("click", removeWall);
   autoSummonButton.addEventListener("click", toggleAutoSummon);
   return () => {
     unsubscribe();
-    wallRemovalButton.removeEventListener("click", toggleWallRemoval);
+    wallRemovalButton.removeEventListener("click", removeWall);
     autoSummonButton.removeEventListener("click", toggleAutoSummon);
   };
 }

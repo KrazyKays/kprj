@@ -4,7 +4,8 @@ export const SUMMON_COST = 5;
 export const SUMMON_COST_INCREMENT = 1;
 export const MAX_COMPANION_LEVEL = 3;
 export const MAX_RECENT_ACTIONS = 5;
-export const WALL_REMOVAL_COST = 1;
+export const WALL_REMOVAL_COST = 10;
+export const AUTO_SUMMON_COST = 20;
 
 export const COMPANION_RARITIES = [
   { id: "common", name: "Commun", weight: 70 },
@@ -92,7 +93,9 @@ export interface ProgressionSnapshot {
   fragments: number;
   wallRemovalCost: number;
   wallsRemaining: number;
-  wallRemovalActive: boolean;
+  lastRemovedWallIndex: number | null;
+  autoSummonUnlocked: boolean;
+  autoSummonCost: number;
   autoSummonEnabled: boolean;
   summonCost: number;
   affordableSummons: number;
@@ -120,8 +123,8 @@ export type SummonAllResult =
 
 type ProgressionListener = (snapshot: ProgressionSnapshot) => void;
 
-export type WallRemovalStartResult =
-  | "ready"
+export type WallRemovalResult =
+  | "removed"
   | "insufficient-fragments"
   | "no-walls";
 
@@ -129,7 +132,8 @@ export class GameProgression {
   private resources = 0;
   private fragments = 0;
   private wallsRemaining = DEFAULT_WALLS.length;
-  private wallRemovalActive = false;
+  private lastRemovedWallIndex: number | null = null;
+  private autoSummonUnlocked = false;
   private autoSummonEnabled = false;
   private successfulSummons = 0;
   private readonly companionLevels: Record<CompanionId, number> = {
@@ -152,7 +156,9 @@ export class GameProgression {
       fragments: this.fragments,
       wallRemovalCost: WALL_REMOVAL_COST,
       wallsRemaining: this.wallsRemaining,
-      wallRemovalActive: this.wallRemovalActive,
+      lastRemovedWallIndex: this.lastRemovedWallIndex,
+      autoSummonUnlocked: this.autoSummonUnlocked,
+      autoSummonCost: AUTO_SUMMON_COST,
       autoSummonEnabled: this.autoSummonEnabled,
       summonCost: this.getSummonCost(),
       affordableSummons: affordableSummons.count,
@@ -212,7 +218,10 @@ export class GameProgression {
   }
 
   setAutoSummon(enabled: boolean): void {
-    if (this.autoSummonEnabled === enabled) {
+    if (
+      this.autoSummonEnabled === enabled ||
+      (enabled && !this.autoSummonUnlocked)
+    ) {
       return;
     }
 
@@ -227,7 +236,21 @@ export class GameProgression {
     return this.companionLevels.magpie * 2;
   }
 
-  startWallRemoval(): WallRemovalStartResult {
+  unlockAutoSummon(): boolean {
+    if (this.autoSummonUnlocked || this.fragments < AUTO_SUMMON_COST) {
+      return false;
+    }
+
+    this.fragments -= AUTO_SUMMON_COST;
+    this.autoSummonUnlocked = true;
+    this.recordAction(
+      `Achat auto débloqué · ${AUTO_SUMMON_COST} fragments dépensés.`,
+    );
+    this.notify();
+    return true;
+  }
+
+  removeRandomWall(): WallRemovalResult {
     if (this.wallsRemaining === 0) {
       return "no-walls";
     }
@@ -235,43 +258,18 @@ export class GameProgression {
       return "insufficient-fragments";
     }
 
-    this.wallRemovalActive = true;
-    this.notify();
-    return "ready";
-  }
-
-  cancelWallRemoval(): void {
-    if (!this.wallRemovalActive) {
-      return;
-    }
-
-    this.wallRemovalActive = false;
-    this.notify();
-  }
-
-  isWallRemovalActive(): boolean {
-    return this.wallRemovalActive;
-  }
-
-  confirmWallRemoval(): boolean {
-    if (
-      !this.wallRemovalActive ||
-      this.wallsRemaining === 0 ||
-      this.fragments < WALL_REMOVAL_COST
-    ) {
-      return false;
-    }
-
     this.fragments -= WALL_REMOVAL_COST;
+    this.lastRemovedWallIndex = Math.min(
+      this.wallsRemaining - 1,
+      Math.floor(this.random() * this.wallsRemaining),
+    );
     this.wallsRemaining -= 1;
-    this.wallRemovalActive = false;
     this.recordAction(
-      `Mur supprimé · ${WALL_REMOVAL_COST} fragment dépensé.`,
+      `Mur aléatoire supprimé · ${WALL_REMOVAL_COST} fragments dépensés.`,
     );
     this.notify();
-    return true;
+    return "removed";
   }
-
   summon(): SummonResult {
     const result = this.summonOne();
     if (result.kind === "success") {
