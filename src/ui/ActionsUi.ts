@@ -58,14 +58,14 @@ export function bindActionsUi(
       autoSummonButton.removeAttribute("aria-pressed");
     }
     autoSummonButton.textContent = !unlocked
-      ? `Débloquer l’achat auto · ${snapshot.autoSummonCost} fragments`
+      ? `Débloquer l’invocation automatique · ${snapshot.autoSummonCost} fragments`
       : snapshot.autoSummonEnabled
-        ? "Achat auto d’invocations : activé"
-        : "Achat auto d’invocations : désactivé";
+        ? "Invocation automatique : activée"
+        : "Invocation automatique : désactivée";
 
     const missing: string[] = [];
     if (!unlocked && snapshot.fragments < snapshot.autoSummonCost) {
-      missing.push(`${snapshot.autoSummonCost} fragments pour débloquer l’achat auto`);
+      missing.push(`${snapshot.autoSummonCost} fragments pour débloquer l’invocation automatique`);
     }
     if (!noWalls && !canRemoveWall) {
       missing.push(`${cost} fragments pour supprimer un mur`);

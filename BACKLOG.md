@@ -59,7 +59,7 @@ mécaniques ou demandent des choix de conception.
    supprime immédiatement un mur tiré au hasard ; l'action apparaît dans
    l'historique. Ensuite : décider si le coût doit évoluer et si une arène doit
    pouvoir restaurer ses murs.
-9 bis. **Action : achat automatique d'invocations** — Implémenté : à débloquer
+9 bis. **Action : invocation automatique** — Implémenté : à débloquer
    une fois pour 20 fragments, puis bascule activable/désactivable ; tant
    qu'elle est active, les invocations sont achetées dès que les pépites
    suffisent et marquées « automatiquement » dans l'historique.

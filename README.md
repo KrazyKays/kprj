@@ -29,8 +29,8 @@ choix d’invoquer un seul compagnon. Les doublons augmentent le niveau du
 compagnon jusqu’au niveau 3 ; les
 compagnons déjà au niveau maximal ne sont plus inclus dans les tirages. Les raretés sont définies par l’efficacité des passifs pour obtenir des pépites :
 le Moustique magnétique et le Lapin rapide sont communs, l’Écureuil prévoyant
-peu commun, et le Singe productif, le Crabe trou noir ainsi que la Pie glaneuse rares. Les chances
-de groupe sont pondérées à 70 %, 20 % et 8 %, puis normalisées et réparties
+et le Singe productif peu communs, et le Crabe trou noir ainsi que la Pie glaneuse rares. Les chances
+de groupe sont pondérées à 50 %, 35 % et 15 %, puis normalisées et réparties
 également entre les compagnons disponibles de chaque groupe. Quand tous les
 compagnons d’une rareté sont au niveau maximal, sa part est redistribuée entre
 les raretés restantes ; les probabilités détaillées sont consultables depuis
@@ -63,7 +63,7 @@ et chacun réapparaît après huit secondes. Ils se dépensent dans le panneau
 quand ils sont utilisables) ; les actions payées en fragments prennent le vert
 des fragments quand elles sont utilisables. « Supprimer un mur aléatoire »
 coûte 10 fragments et supprime aussitôt un mur tiré au hasard, ce qui est
-inscrit dans l’historique. « Achat auto d’invocations » doit d’abord être
+inscrit dans l’historique. « Invocation automatique » doit d’abord être
 débloqué pour 20 fragments ; il s’active ensuite et se désactive à volonté :
 tant qu’il est actif, une invocation est
 achetée dès que les pépites le permettent et signalée

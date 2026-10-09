@@ -79,10 +79,10 @@ describe("progression UI", () => {
     ).not.toContain("%");
     expect(document.querySelector(".summon-chance-help")?.hasAttribute("open")).toBe(false);
     expect(document.getElementById("companion-chances")?.textContent).toContain(
-      "Moustique magnétique · 35,7 %",
+      "Moustique magnétique · 25 %",
     );
     expect(document.getElementById("companion-chances")?.textContent).toContain(
-      "Singe productif · 2,7 %",
+      "Singe productif · 17,5 %",
     );
 
     for (let i = 0; i < SUMMON_COST; i += 1) {

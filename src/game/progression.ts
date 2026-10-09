@@ -8,9 +8,9 @@ export const WALL_REMOVAL_COST = 10;
 export const AUTO_SUMMON_COST = 20;
 
 export const COMPANION_RARITIES = [
-  { id: "common", name: "Commun", weight: 70 },
-  { id: "uncommon", name: "Peu commun", weight: 20 },
-  { id: "rare", name: "Rare", weight: 8 },
+  { id: "common", name: "Commun", weight: 50 },
+  { id: "uncommon", name: "Peu commun", weight: 35 },
+  { id: "rare", name: "Rare", weight: 15 },
 ] as const;
 
 export type CompanionRarity = (typeof COMPANION_RARITIES)[number]["id"];
@@ -52,7 +52,7 @@ export const COMPANIONS = [
   {
     id: "snail",
     name: "Singe productif",
-    rarity: "rare",
+    rarity: "uncommon",
     passive: "Réduit de 15 % le délai de réapparition par niveau.",
     bonusByLevel: [
       "−15 % au délai de réapparition",
@@ -244,7 +244,7 @@ export class GameProgression {
     this.fragments -= AUTO_SUMMON_COST;
     this.autoSummonUnlocked = true;
     this.recordAction(
-      `Achat auto débloqué · ${AUTO_SUMMON_COST} fragments dépensés.`,
+      `Invocation automatique débloquée · ${AUTO_SUMMON_COST} fragments dépensés.`,
     );
     this.notify();
     return true;

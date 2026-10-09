@@ -180,11 +180,22 @@ canvas {
   color: #29241b;
 }
 
-#resource-count {
+#resource-count,
+#fragment-count {
   font-size: 1.75rem;
   font-weight: 700;
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 5px #191815;
+}
+
+#resource-count {
+  color: #e2a82e;
+}
+
+#fragment-count {
+  color: #2f9e8f;
 }
 
 .panel-placeholder {
