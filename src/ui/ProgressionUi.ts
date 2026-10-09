@@ -3,7 +3,6 @@ import {
   COMPANIONS,
   GameProgression,
   MAX_COMPANION_LEVEL,
-  SECONDARY_RESOURCE_NAME,
 } from "../game/progression";
 import type { TutorialGuide } from "../game/tutorial";
 import type { CompanionId, ProgressionSnapshot } from "../game/progression";
@@ -14,8 +13,6 @@ export function bindProgressionUi(
 ): () => void {
   const resourceCount = document.getElementById("resource-count");
   const resourceUnit = document.getElementById("resource-unit");
-  const secondaryResourceCount = document.getElementById("secondary-resource-count");
-  const secondaryResourceUnit = document.getElementById("secondary-resource-unit");
   const summonButton = document.getElementById("summon-button");
   const summonAllButton = document.getElementById("summon-all-button");
   const summonPreview = document.getElementById("summon-preview");
@@ -101,17 +98,6 @@ export function bindProgressionUi(
     resourceCount.value = String(snapshot.resources);
     resourceUnit.textContent =
       snapshot.resources === 1 ? "pépite disponible" : "pépites disponibles";
-
-    if (secondaryResourceCount instanceof HTMLOutputElement) {
-      secondaryResourceCount.value = String(snapshot.secondaryResources);
-    }
-    if (secondaryResourceUnit instanceof HTMLElement) {
-      const secondaryResourceLabel =
-        snapshot.secondaryResources === 1
-          ? `${SECONDARY_RESOURCE_NAME.toLowerCase()} disponible`
-          : `${SECONDARY_RESOURCE_NAME.toLowerCase()}s disponibles`;
-      secondaryResourceUnit.textContent = secondaryResourceLabel;
-    }
 
     let allMaxed = true;
     for (const companion of COMPANIONS) {

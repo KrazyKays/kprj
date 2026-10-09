@@ -47,21 +47,20 @@ mécaniques ou demandent des choix de conception.
    destinations et l'apparition des ressources hors des obstacles. Permettre
    ultérieurement de choisir entre plusieurs configurations ou géométries
    d'arène.
-8. **Nouvelle ressource secondaire et compagnon associé** — Implémenté dans la
-   version actuelle avec la ressource secondaire « matière noire » rapportée par le
-   Crabe trou noir : chaque absorption de jeton ajoute un montant proportionnel au
-   niveau du compagnon et l'affichage du compteur est visible dans le panneau. La
-   logique reste compatible avec l'item 5 (ressources alternatives) et prépare le
-   terrain pour les items 9 et 10. Prérequis pour les items 9 et 10.
-9. **Action : traversée de murs** — Permettre au joueur de dépenser un certain
-   coût en ressources secondaires (item 8) pour activer temporairement ou
-   définitivement la capacité à traverser les murs de l'arène. Définir la durée
-   ou la permanence de l'effet, le coût, le retour visuel (changement d'apparence
-   du joueur, indication dans l'UI) et les interactions avec le système de
-   collision existant. Dépend de l'item 8 (ressource disponible) et de l'item 7
-   (murs en place).
+8. **Fragments (ressource secondaire) et moyen de les obtenir** — La ressource
+   « fragment » existe (compteur dans le panneau « Butin », dépensable dans le
+   panneau « Actions »), distincte des pépites et sans lien avec un compagnon
+   précis. Aucun moyen de l'obtenir n'est encore implémenté : à définir (source
+   dans l'arène, récompense, compagnon dédié éventuel, apparition et respawn).
+   Prérequis pour que les actions 9 et 10 soient jouables. À coordonner avec
+   l'item 5 pour garder lisibles les types de ressources.
+9. **Action : supprimer un mur** — Implémenté (remplace l'ancienne « traversée
+   de murs ») : dans le panneau « Actions », le bouton coûte 1 fragment, met les
+   murs en évidence et un clic sur un mur le supprime définitivement ; l'action
+   est annulable sans frais et apparaît dans l'historique. Ensuite : décider si
+   le coût doit évoluer et si une arène doit pouvoir restaurer ses murs.
 10. **Action : prestige des compagnons** — Permettre au joueur de dépenser des
-    ressources secondaires (item 8) pour « prestiger » un compagnon : le remettre
+    fragments (item 8) pour « prestiger » un compagnon : le remettre
     au niveau 0 en échange d'un bonus permanent améliorant ses statistiques
     au-delà du plafond actuel de niveau 3 (par exemple +X % supplémentaire par
     prestige). Définir le coût, le nombre de niveaux de prestige possibles, la

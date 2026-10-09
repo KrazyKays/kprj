@@ -8,6 +8,7 @@ import { RENDER_SCALE } from "../renderScale";
 import type { TutorialGuide } from "../tutorial";
 import {
   DEFAULT_WALLS,
+  findObstacleIndexAt,
   isCircleCollidingWithAnyObstacle,
   moveCircleWithObstacles,
   resolveCirclePosition,
@@ -43,6 +44,7 @@ export class StartupScene extends Phaser.Scene {
   private collectionZone!: Phaser.GameObjects.Arc;
   private destination: Phaser.Math.Vector2 | null = null;
   private destinationMarker!: Phaser.GameObjects.Arc;
+  private wallsGraphics!: Phaser.GameObjects.Graphics;
   private resources: Phaser.GameObjects.Arc[] = [];
   private observedResourceCapacity = RESOURCE_LOCATIONS.length;
   private specialTokens: Phaser.GameObjects.Star[] = [];
@@ -84,25 +86,11 @@ export class StartupScene extends Phaser.Scene {
       }
     }
 
-    const wallsGraphics = this.add.graphics().setDepth(2);
-    for (const wall of this.walls) {
-      // Solid dark ink fill
-      wallsGraphics.fillStyle(0x231f1c, 1);
-      wallsGraphics.fillRect(wall.x, wall.y, wall.width, wall.height);
-
-      // Inner subtle border for printed relief effect
-      wallsGraphics.lineStyle(RENDER_SCALE, 0x473e35, 0.85);
-      wallsGraphics.strokeRect(
-        wall.x + 2 * RENDER_SCALE,
-        wall.y + 2 * RENDER_SCALE,
-        wall.width - 4 * RENDER_SCALE,
-        wall.height - 4 * RENDER_SCALE,
-      );
-
-      // Black outline matching arena borders and entities
-      wallsGraphics.lineStyle(3 * RENDER_SCALE, 0x191815, 1);
-      wallsGraphics.strokeRect(wall.x, wall.y, wall.width, wall.height);
-    }
+    this.wallsGraphics = this.add.graphics().setDepth(2);
+    this.drawWalls(false);
+    this.progression.subscribe(({ wallRemovalActive }) =>
+      this.drawWalls(wallRemovalActive),
+    );
 
     this.collectionZone = this.add
       .circle(
@@ -167,7 +155,48 @@ export class StartupScene extends Phaser.Scene {
     this.collectSpecialTokens(collectionZoneRadius);
   }
 
+  private drawWalls(removable: boolean): void {
+    this.wallsGraphics.clear();
+    for (const wall of this.walls) {
+      // Solid dark ink fill
+      this.wallsGraphics.fillStyle(0x231f1c, 1);
+      this.wallsGraphics.fillRect(wall.x, wall.y, wall.width, wall.height);
+
+      // Inner subtle border for printed relief effect
+      this.wallsGraphics.lineStyle(RENDER_SCALE, 0x473e35, 0.85);
+      this.wallsGraphics.strokeRect(
+        wall.x + 2 * RENDER_SCALE,
+        wall.y + 2 * RENDER_SCALE,
+        wall.width - 4 * RENDER_SCALE,
+        wall.height - 4 * RENDER_SCALE,
+      );
+
+      // Black outline matching arena borders and entities
+      this.wallsGraphics.lineStyle(
+        3 * RENDER_SCALE,
+        removable ? 0xc93324 : 0x191815,
+        1,
+      );
+      this.wallsGraphics.strokeRect(wall.x, wall.y, wall.width, wall.height);
+    }
+  }
+
+  private tryRemoveWall(pointer: Phaser.Input.Pointer): void {
+    const index = findObstacleIndexAt(pointer.x, pointer.y, this.walls);
+    if (index === -1 || !this.progression.confirmWallRemoval()) {
+      return;
+    }
+
+    this.walls.splice(index, 1);
+    this.drawWalls(false);
+  }
+
   private setDestination(pointer: Phaser.Input.Pointer): void {
+    if (this.progression.isWallRemovalActive()) {
+      this.tryRemoveWall(pointer);
+      return;
+    }
+
     if (
       pointer.x < ARENA.left ||
       pointer.x > ARENA.right ||
@@ -294,8 +323,6 @@ export class StartupScene extends Phaser.Scene {
         this.resources,
         SPECIAL_TOKEN_ABSORBED_RESOURCE_COUNT,
       );
-      const secondaryReward = Math.max(1, this.progression.getCompanionLevel("crab"));
-      this.progression.collectSecondaryResource(secondaryReward);
       const absorbedSet = new Set(absorbedResources);
       this.resources = this.resources.filter((resource) => {
         if (!absorbedSet.has(resource)) {

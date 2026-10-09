@@ -1,8 +1,10 @@
+import { DEFAULT_WALLS } from "./obstacles";
+
 export const SUMMON_COST = 5;
 export const SUMMON_COST_INCREMENT = 1;
 export const MAX_COMPANION_LEVEL = 3;
 export const MAX_RECENT_ACTIONS = 5;
-export const SECONDARY_RESOURCE_NAME = "Matière noire";
+export const WALL_REMOVAL_COST = 1;
 
 export const COMPANION_RARITIES = [
   { id: "common", name: "Commun", weight: 70 },
@@ -75,7 +77,10 @@ export type CompanionId = (typeof COMPANIONS)[number]["id"];
 
 export interface ProgressionSnapshot {
   resources: number;
-  secondaryResources: number;
+  fragments: number;
+  wallRemovalCost: number;
+  wallsRemaining: number;
+  wallRemovalActive: boolean;
   summonCost: number;
   affordableSummons: number;
   affordableSummonCost: number;
@@ -102,9 +107,16 @@ export type SummonAllResult =
 
 type ProgressionListener = (snapshot: ProgressionSnapshot) => void;
 
+export type WallRemovalStartResult =
+  | "ready"
+  | "insufficient-fragments"
+  | "no-walls";
+
 export class GameProgression {
   private resources = 0;
-  private secondaryResources = 0;
+  private fragments = 0;
+  private wallsRemaining = DEFAULT_WALLS.length;
+  private wallRemovalActive = false;
   private successfulSummons = 0;
   private readonly companionLevels: Record<CompanionId, number> = {
     mosquito: 0,
@@ -122,7 +134,10 @@ export class GameProgression {
     const affordableSummons = this.getAffordableSummons();
     return {
       resources: this.resources,
-      secondaryResources: this.secondaryResources,
+      fragments: this.fragments,
+      wallRemovalCost: WALL_REMOVAL_COST,
+      wallsRemaining: this.wallsRemaining,
+      wallRemovalActive: this.wallRemovalActive,
       summonCost: this.getSummonCost(),
       affordableSummons: affordableSummons.count,
       affordableSummonCost: affordableSummons.cost,
@@ -172,17 +187,53 @@ export class GameProgression {
     this.notify();
   }
 
-  collectSecondaryResource(amount = 1): void {
-    this.secondaryResources += amount;
+  // Aucune source de fragments n'existe encore dans le jeu.
+  addFragments(amount: number): void {
+    this.fragments += amount;
     this.notify();
   }
 
-  spendSecondaryResource(amount: number): boolean {
-    if (this.secondaryResources < amount) {
+  startWallRemoval(): WallRemovalStartResult {
+    if (this.wallsRemaining === 0) {
+      return "no-walls";
+    }
+    if (this.fragments < WALL_REMOVAL_COST) {
+      return "insufficient-fragments";
+    }
+
+    this.wallRemovalActive = true;
+    this.notify();
+    return "ready";
+  }
+
+  cancelWallRemoval(): void {
+    if (!this.wallRemovalActive) {
+      return;
+    }
+
+    this.wallRemovalActive = false;
+    this.notify();
+  }
+
+  isWallRemovalActive(): boolean {
+    return this.wallRemovalActive;
+  }
+
+  confirmWallRemoval(): boolean {
+    if (
+      !this.wallRemovalActive ||
+      this.wallsRemaining === 0 ||
+      this.fragments < WALL_REMOVAL_COST
+    ) {
       return false;
     }
 
-    this.secondaryResources -= amount;
+    this.fragments -= WALL_REMOVAL_COST;
+    this.wallsRemaining -= 1;
+    this.wallRemovalActive = false;
+    this.recordAction(
+      `Mur supprimé · ${WALL_REMOVAL_COST} fragment dépensé.`,
+    );
     this.notify();
     return true;
   }
@@ -232,10 +283,6 @@ export class GameProgression {
 
   getBaseResourceCapacity(baseCapacity: number): number {
     return baseCapacity + this.companionLevels.squirrel * 2;
-  }
-
-  getSecondaryResourceCount(): number {
-    return this.secondaryResources;
   }
 
   getCompanionLevel(id: CompanionId): number {

@@ -41,10 +41,7 @@ la vitesse du joueur (+15 % par niveau), le délai de réapparition des pépites
 (un par niveau) grâce au Crabe trou noir, et la capacité maximale de pépites de
 base à l’écran (+2, +4 puis +6) grâce à l’Écureuil prévoyant.
 Les jetons violets absorbent jusqu’aux trois pépites les plus proches,
-qui sont créditées au compteur, puis réapparaissent après six secondes. Chaque
-absorption rapporte aussi une quantité de matière noire proportionnelle au niveau
-du Crabe trou noir, visible dans le panneau comme ressource secondaire distincte
-et dédiée aux futures actions. Le
+qui sont créditées au compteur, puis réapparaissent après six secondes. Le
 panneau détaille le bonus de chaque
 niveau et met en évidence les niveaux débloqués et le prochain ; les détails
 peuvent être dépliés pour garder le panneau compact. Le bouton d’invocation
@@ -54,8 +51,14 @@ historique séparé conserve les cinq invocations les plus récentes.
 La progression est réinitialisée au rechargement de la page.
 
 L’arène conserve un format carré : le panneau de ressources et d’actions est
-placé à côté sur grand écran et sous l’arène sur téléphone. Les emplacements du
-panneau d’actions sont réservés aux futures fonctionnalités.
+placé à côté sur grand écran et sous l’arène sur téléphone.
+
+Les fragments sont une ressource distincte des pépites, affichée dans le panneau
+« Butin » ; aucun moyen de les obtenir n’existe encore. Ils se dépensent dans le
+panneau « Actions ». La première action, « Supprimer un mur », coûte 1 fragment :
+après avoir activé le bouton, un clic sur un mur de l’arène (mis en évidence en
+rouge) le supprime. Le bouton permet d’annuler avant de choisir, sans frais, et
+l’action est inscrite dans l’historique.
 
 L’interface adopte une esthétique de fanzine photocopié : papier cassé, trames
 imprimées, contours noirs francs et accents rouge brique.
